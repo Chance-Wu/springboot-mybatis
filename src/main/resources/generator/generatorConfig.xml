@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <!--targetRuntime="MyBatis3Simple"：这里可以选择其他生成类型，-->
+    <context id="MySQLTables" targetRuntime="MyBatis3Simple">
+        <!--连接目标数据库 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/test?useSSL=false"
+                        userId="root"
+                        password="539976">
+        </jdbcConnection>
+
+        <!--java类型解析器-->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <!--模型层属性生产策略
+        targetPackage：指定目标包名
+        targetProject：指定目标工程
+        -->
+        <javaModelGenerator targetPackage="com.chance.entity" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!--sqlMapGenerator:sql映射生产策略-->
+        <sqlMapGenerator
+                targetPackage="mapper"
+                targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <!--dao接口-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.chance.mapper"
+                             targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <!--指定要生成数据库表-->
+        <table tableName="user" domainObjectName="User"></table>
+
+    </context>
+</generatorConfiguration>
