@@ -6,7 +6,8 @@ package com.chance.service;
  * <p>
  *
  * @author chance
- * @since 2020-08-19
+ * @since 2020-08-20
  */
-public class UserService {
+public interface UserService {
+    String queryUserById(int id);
 }
