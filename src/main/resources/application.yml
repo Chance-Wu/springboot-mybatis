@@ -36,7 +36,7 @@ spring:
       # 合并多个DruidDataSource的监控数据
       use-global-data-source-stat: true
 
-#######################mybatis##########################
+#######################tk mybatis##########################
 #mybatis:
 #  configuration:
 #    map-underscore-to-camel-case: true
@@ -49,6 +49,11 @@ spring:
 #  reasonable: true
 #  support-methods-arguments:
 #  params: count=countSql
-
-
 ########################################################
+
+####################### mybatis-plus ##########################
+mybatis-plus:
+  type-aliases-package: com.chance.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
