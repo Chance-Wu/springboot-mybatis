@@ -2,20 +2,19 @@ package com.chance.controller;
 
 
 import com.chance.entity.User;
+import com.chance.entity.vo.DemoUser;
 import com.chance.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
-
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author chance
@@ -29,10 +28,62 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @ApiOperation(value = "select",notes = "查询")
+    @ApiOperation(value = "select", notes = "查询")
     @PostMapping("/list")
     public List<User> select() {
         List<User> users = userService.list();
         return users;
+    }
+
+    @ApiOperation(value = "select", notes = "查询")
+    @RequestMapping("/addUser1")
+    public String addUser1(String username, String password) {
+        System.out.println("username is:" + username);
+        System.out.println("password is:" + password);
+        return "success";
+    }
+
+    @RequestMapping("/addUser2")
+    public String addUser2(HttpServletRequest request) {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        System.out.println("username is:" + username);
+        System.out.println("password is:" + password);
+        return "success";
+    }
+
+    @RequestMapping("/addUser3")
+    public String addUser3(DemoUser user) {
+        System.out.println("username is:" + user.getUsername());
+        System.out.println("password is:" + user.getPassword());
+        return "success";
+    }
+
+    @GetMapping("/addUser4/{username}/{password}")
+    public String addUser4(@PathVariable String username, @PathVariable String password) {
+        System.out.println("username is:" + username);
+        System.out.println("password is:" + password);
+        return "success";
+    }
+
+    @PostMapping("/addUser5")
+    public String addUser5(@ModelAttribute("user") DemoUser user) {
+        System.out.println("username is:"+user.getUsername());
+        System.out.println("password is:"+user.getPassword());
+        return "success";
+    }
+
+    @RequestMapping(value="/addUser6")
+    public String addUser6(@RequestParam("username") String username,@RequestParam("password") String password) {
+        System.out.println("username is:"+username);
+        System.out.println("password is:"+password);
+        return "success";
+    }
+
+    @RequestMapping(value="/addUser7")
+    public String addUser7(@RequestBody DemoUser user) {
+        System.out.println("username is:"+user.getUsername());
+        System.out.println("password is:"+user.getPassword());
+        return "success";
     }
 }
