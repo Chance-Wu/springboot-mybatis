@@ -1,6 +1,7 @@
 package com.chance.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.chance.entity.User;
 import com.chance.entity.vo.DemoUser;
 import com.chance.service.IUserService;
@@ -68,22 +69,32 @@ public class UserController {
 
     @PostMapping("/addUser5")
     public String addUser5(@ModelAttribute("user") DemoUser user) {
-        System.out.println("username is:"+user.getUsername());
-        System.out.println("password is:"+user.getPassword());
+        System.out.println("username is:" + user.getUsername());
+        System.out.println("password is:" + user.getPassword());
         return "success";
     }
 
-    @RequestMapping(value="/addUser6")
-    public String addUser6(@RequestParam("username") String username,@RequestParam("password") String password) {
-        System.out.println("username is:"+username);
-        System.out.println("password is:"+password);
+    @RequestMapping(value = "/addUser6")
+    public String addUser6(@RequestParam("username") String username, @RequestParam("password") String password) {
+        System.out.println("username is:" + username);
+        System.out.println("password is:" + password);
         return "success";
     }
 
-    @RequestMapping(value="/addUser7")
+    @RequestMapping(value = "/addUser7")
     public String addUser7(@RequestBody DemoUser user) {
-        System.out.println("username is:"+user.getUsername());
-        System.out.println("password is:"+user.getPassword());
+        System.out.println("username is:" + user.getUsername());
+        System.out.println("password is:" + user.getPassword());
         return "success";
     }
+
+    @PostMapping(value = "/addUser8")
+    public String addUser8(@RequestBody JSONObject jsonObject) {
+        String username = (String) jsonObject.get("username");
+        String password = (String) jsonObject.get("password");
+        System.out.println("username is:" + username);
+        System.out.println("password is:" + password);
+        return "success";
+    }
+
 }
