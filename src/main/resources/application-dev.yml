@@ -58,10 +58,34 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
+  type-handlers-package: com.chance.entity.typehandler
 
 #logging:
 #  level:
 #    com:
 #      chance:
 #        mapper: debug
+
+#########################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

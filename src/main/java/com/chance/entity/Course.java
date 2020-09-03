@@ -21,16 +21,16 @@ public class Course extends Model<Course> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("Cno")
-    private String Cno;
+    @TableId("c_no")
+    private String cNo;
 
-    @TableField("Cname")
-    private String Cname;
+    @TableField("c_name")
+    private String cName;
 
 
     @Override
     protected Serializable pkVal() {
-        return this.Cno;
+        return this.cNo;
     }
 
 }

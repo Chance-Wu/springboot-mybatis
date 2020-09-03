@@ -1,6 +1,9 @@
 package com.chance.controller;
 
 
+import com.chance.entity.vo.CourseRequest;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,4 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/course")
 public class CourseController {
 
+    @PostMapping("/validate")
+    public String addCourse(@Validated CourseRequest courseRequest) {
+        System.out.println(courseRequest.getCName());
+        return "success";
+    }
 }
