@@ -8,18 +8,18 @@ package com.chance.common.api;
  * @author chance
  * @since 2020-09-03
  */
-public class RspData<T> {
+public class CommonRsp<T> {
 
     private long code;
     private String message;
     private T body;
 
-    public RspData(long code, String message) {
+    public CommonRsp(long code, String message) {
         this.code = code;
         this.message = message;
     }
 
-    public RspData(long code, String message, T body) {
+    public CommonRsp(long code, String message, T body) {
         this.code = code;
         this.message = message;
         this.body = body;

@@ -1,11 +1,12 @@
 package com.chance.controller;
 
 
+import com.chance.common.api.CommonRsp;
+import com.chance.component.RedisUtils;
 import com.chance.entity.User;
 import com.chance.entity.vo.DemoUser;
 import com.chance.service.IUserService;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.chance.util.JWTUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,27 @@ import java.util.List;
  */
 @Api("UserController")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/auth/user")
 public class UserController {
 
     @Autowired
+    private RedisUtils redisUtils;
+
+    @Autowired
     private IUserService userService;
+
+    public CommonRsp login() {
+        // 校验用户名密码
+
+        // 获取token
+        // int jwtMaxAgeMinutes = 60 * 24 * 7
+        // int exp = 3600;
+        // String token = JWTUtils.getToken(username,jwtMaxAgeMinutes);
+        // redisUtils.set(key,token,exp);
+
+        // 返回token，用户信息，数据权限
+        return null;
+    }
 
     @ApiOperation(value = "select", notes = "查询")
     @PostMapping("/list")

@@ -173,6 +173,8 @@ JWT 的这些特性使得我们可以完全依赖其无状态的特性提供数�
 http://www.example.com/user?token=xxx
 ```
 
+自定义拦截器去获取token并验证。
+
 9、Token和JWT的区别
 --
 * Token：服务端验证客户端发送过来的 Token 时，还需要查询数据库获取用户信息，然后验证 Token 是否有效。
