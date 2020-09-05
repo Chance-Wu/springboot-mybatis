@@ -1,16 +1,18 @@
 package com.chance.controller;
 
 
-import com.alibaba.fastjson.JSONObject;
 import com.chance.entity.User;
 import com.chance.entity.vo.DemoUser;
 import com.chance.service.IUserService;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -89,9 +91,9 @@ public class UserController {
     }
 
     @PostMapping(value = "/addUser8")
-    public String addUser8(@RequestBody JSONObject jsonObject) {
-        String username = (String) jsonObject.get("username");
-        String password = (String) jsonObject.get("password");
+    public String addUser8(@RequestBody HashMap map) {
+        String username = (String) map.get("username");
+        String password = (String) map.get("password");
         System.out.println("username is:" + username);
         System.out.println("password is:" + password);
         return "success";
