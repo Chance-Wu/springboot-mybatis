@@ -6,7 +6,6 @@ import com.chance.component.RedisUtils;
 import com.chance.entity.User;
 import com.chance.entity.vo.DemoUser;
 import com.chance.service.IUserService;
-import com.chance.util.JWTUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

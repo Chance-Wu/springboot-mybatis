@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: uat
   datasource:
     #主数据源
     primary:
