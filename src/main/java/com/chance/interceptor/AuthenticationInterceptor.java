@@ -31,10 +31,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         // 检查用户权限
         // 执行认证
         // 验证token
-        JwtUtils.JwtResult result = JwtUtils.checkToken(token);
-        if (!result.getStatus()) {
-            return false;
-        }
+//        JwtUtils.JwtResult result = JwtUtils.checkToken(token);
+//        if (!result.getStatus()) {
+//            return false;
+//        }
         return true;
     }
 

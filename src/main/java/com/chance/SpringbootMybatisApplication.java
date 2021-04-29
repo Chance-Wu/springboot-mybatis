@@ -1,10 +1,12 @@
 package com.chance;
 
+import okhttp3.OkHttpClient;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -19,7 +21,19 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class SpringbootMybatisApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringbootMybatisApplication.class, args);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(SpringbootMybatisApplication.class, args);
+
+        String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
+
+//        OkHttpClientFactoryBean okHttpClientFactoryBean = (OkHttpClientFactoryBean) applicationContext.getBean("&okHttpClientFactoryBean");
+
+        OkHttpClient okHttpClient = (OkHttpClient) applicationContext.getBean("okHttpClientFactoryBean");
+
+        try {
+            System.out.println(okHttpClient.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
