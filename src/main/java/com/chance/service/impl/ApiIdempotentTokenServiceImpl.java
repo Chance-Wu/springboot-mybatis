@@ -6,7 +6,6 @@ import com.chance.common.exception.BizException;
 import com.chance.component.RedisUtils;
 import com.chance.service.ApiIdempotentTokenService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.StrBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
