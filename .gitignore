@@ -1,38 +1,21 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
+# Java class files
+*.class
+*.log
+*.lock
+*.bak
+*.epoch
 .classpath
-.factorypath
 .project
-.settings
-.springBeans
-.sts4-cache
 
-### IntelliJ IDEA ###
+# generated files
+*/target/**
+gen/
+bin/
+.settings/
+
+# IntelliJ IDEA
 .idea
 *.iws
 *.iml
 *.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
-将删除 src/main/java/com/chance/controller/
-将删除 src/main/java/com/chance/service/
-将删除 src/main/resources/mapper/custom/
-将删除 src/main/resources/static/
-将删除 src/main/resources/templates/
+*/*.iml

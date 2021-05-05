@@ -13,18 +13,18 @@ public class BizException extends RuntimeException {
     /**
      * 自定义错误码
      */
-    private Integer code;
+    private Long code;
 
-    public BizException(int code, String msg) {
+    public BizException(Long code, String msg) {
         super(msg);
         this.code = code;
     }
 
-    public Integer getCode() {
+    public Long getCode() {
         return code;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(Long code) {
         this.code = code;
     }
 }

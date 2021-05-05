@@ -14,6 +14,16 @@ public class CommonRsp<T> {
     private String message;
     private T body;
 
+    public static CommonRsp success() {
+        CommonRsp<Object> rsp = new CommonRsp<>();
+        rsp.setCode(ResultCode.SUCCESS.getCode());
+        rsp.setMessage(ResultCode.SUCCESS.getMessage());
+        return rsp;
+    }
+
+    public CommonRsp() {
+    }
+
     public CommonRsp(long code, String message) {
         this.code = code;
         this.message = message;

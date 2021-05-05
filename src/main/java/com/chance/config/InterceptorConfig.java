@@ -1,5 +1,6 @@
 package com.chance.config;
 
+import com.chance.interceptor.ApiIdempotentInterceptor;
 import com.chance.interceptor.AuthenticationInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         // 添加自定义的拦截器，设置拦截的过滤路径规则
         registry.addInterceptor(authenticationInterceptor())
                 .addPathPatterns("/auth/**");
+        registry.addInterceptor(apiIdempotentInterceptor());
     }
 
     @Bean
@@ -29,4 +31,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
         return new AuthenticationInterceptor();
     }
 
+    @Bean
+    public ApiIdempotentInterceptor apiIdempotentInterceptor() {
+        return new ApiIdempotentInterceptor();
+    }
 }

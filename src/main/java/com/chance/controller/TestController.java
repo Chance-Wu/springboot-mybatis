@@ -1,8 +1,13 @@
 package com.chance.controller;
 
 
+import com.baomidou.mybatisplus.extension.api.R;
+import com.chance.common.annotation.ApiIdempotent;
+import com.chance.common.api.CommonRsp;
+import com.chance.service.ApiIdempotentTokenService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,12 +32,33 @@ import java.util.stream.LongStream;
  * @since 2020-08-22
  */
 @Slf4j
-@Api("WrongController")
+@Api("TestController")
 @RestController
 @RequestMapping
-public class WrongController {
+public class TestController {
 
     private ThreadLocal<Integer> currentUser = ThreadLocal.withInitial(() -> null);
+
+    @Autowired
+    private ApiIdempotentTokenService apiIdempotentTokenService;
+
+    /**
+     * 获取token
+     */
+    @RequestMapping("/getToken")
+    public CommonRsp getToken() {
+        return apiIdempotentTokenService.createToken();
+    }
+
+    /**
+     * 测试接口幂等性, 在需要幂等性校验的方法上声明此注解即可
+     */
+    @ApiIdempotent
+    @RequestMapping("/testIdempotent")
+    public CommonRsp testIdempotent() {
+        return CommonRsp.success();
+    }
+
 
     @GetMapping("/wrong1")
     public Map wrong(@RequestParam("userId") Integer userId) {
@@ -57,10 +83,5 @@ public class WrongController {
             currentUser.remove();
         }
     }
-
-    // 线程个数
-    private static int THREAD_COUNT = 10;
-    // 总元素数量
-    private static int ITEM_COUNT = 1000;
 
 }
