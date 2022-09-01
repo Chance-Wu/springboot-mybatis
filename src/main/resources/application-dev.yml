@@ -9,11 +9,11 @@ spring:
     active: dev
   datasource:
     #主数据源
-    primary:
+    db1:
       url: jdbc:mysql://localhost:3306/test?autoReconnect=true&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false
       username: root
-      password: 539976
-      driver-class-name: com.mysql.jdbc.Driver
+      password: Wcy539976
+      driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     #连接池设置
     druid:

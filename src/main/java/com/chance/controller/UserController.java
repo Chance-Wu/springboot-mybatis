@@ -3,7 +3,6 @@ package com.chance.controller;
 
 import com.chance.common.api.CommonRsp;
 import com.chance.component.RedisUtils;
-import com.chance.entity.User;
 import com.chance.entity.vo.DemoUser;
 import com.chance.service.IUserService;
 import io.swagger.annotations.Api;
@@ -13,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -46,13 +43,6 @@ public class UserController {
 
         // 返回token，用户信息，数据权限
         return null;
-    }
-
-    @ApiOperation(value = "select", notes = "查询")
-    @PostMapping("/list")
-    public List<User> select() {
-        List<User> users = userService.list();
-        return users;
     }
 
     @ApiOperation(value = "select", notes = "查询")

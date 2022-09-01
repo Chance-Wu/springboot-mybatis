@@ -1,9 +1,6 @@
 package com.chance.service.impl;
 
-import com.chance.entity.User;
-import com.chance.mapper.UserMapper;
 import com.chance.service.IUserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +12,6 @@ import org.springframework.stereotype.Service;
  * @since 2020-08-22
  */
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+public class UserServiceImpl implements IUserService {
 
 }

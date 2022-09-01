@@ -1,7 +1,8 @@
 package com.chance.mapper;
 
 import com.chance.entity.User;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author chance
  * @since 2020-08-22
  */
-public interface UserMapper extends BaseMapper<User> {
+public interface UserMapper {
 
+    List<User> queryAllUsers();
 }

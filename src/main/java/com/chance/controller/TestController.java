@@ -1,7 +1,6 @@
 package com.chance.controller;
 
 
-import com.baomidou.mybatisplus.extension.api.R;
 import com.chance.common.annotation.ApiIdempotent;
 import com.chance.common.api.CommonRsp;
 import com.chance.service.ApiIdempotentTokenService;
@@ -15,13 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 /**
  * <p>

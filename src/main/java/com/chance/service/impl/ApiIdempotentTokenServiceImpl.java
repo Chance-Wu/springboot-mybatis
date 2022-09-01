@@ -44,7 +44,7 @@ public class ApiIdempotentTokenServiceImpl implements ApiIdempotentTokenService 
         // header中不存在token
         if (StringUtils.isBlank(token)) {
             token = request.getParameter("apiIdempotentToken");
-            // parameter中也不存在token
+            //            // parameter中也不存在token
             if (StringUtils.isBlank(token)) {
                 throw new BizException(ResultCode.ILLEGAL_ARGUMENT.getCode(),ResultCode.ILLEGAL_ARGUMENT.getMessage());
             }
