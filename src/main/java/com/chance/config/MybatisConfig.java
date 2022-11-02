@@ -1,9 +1,8 @@
 package com.chance.config;
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
-import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,15 +10,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.io.File;
-import java.io.InputStream;
-import java.io.Reader;
 
 /**
  * <p>
@@ -29,7 +24,7 @@ import java.io.Reader;
  * @author chance
  * @since 2020-08-15
  */
-@MapperScan(basePackages = {"com.chance.mapper"}, sqlSessionFactoryRef = "primarySessionFactory")
+@MapperScan(basePackages = {"com.chance.mapper"}, sqlSessionFactoryRef = "sessionFactory1")
 @ComponentScan
 @EnableTransactionManagement
 @Configuration
@@ -60,6 +55,14 @@ public class MybatisConfig {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource1);
         factoryBean.setTypeAliasesPackage("com.chance.entity");
+        factoryBean.setTypeHandlersPackage("com.chance.handler");
+
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        // 下划线转驼峰
+        configuration.setMapUnderscoreToCamelCase(true);
+        // 日志具体实现
+        configuration.setLogImpl(StdOutImpl.class);
+        factoryBean.setConfiguration(configuration);
 
         //分页插件
 

@@ -1,5 +1,6 @@
-package com.chance.entity;
+package com.chance.entity.dto;
 
+import com.chance.enums.SexEnum;
 import lombok.Data;
 
 /**
@@ -11,10 +12,10 @@ import lombok.Data;
  * @since 2020-08-22
  */
 @Data
-public class UserReq {
+public class UserDto {
 
     private String username;
     private String password;
-    private String userSex;
+    private SexEnum userSex = SexEnum.DEFAULT;
     private String nickName;
 }

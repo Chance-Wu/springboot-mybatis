@@ -2,6 +2,7 @@ package com.chance.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.data.annotation.Id;
 
 /**
  * <p>
@@ -25,6 +26,7 @@ public class User {
     /**
      * 用户名
      */
+
     private String username;
 
     /**

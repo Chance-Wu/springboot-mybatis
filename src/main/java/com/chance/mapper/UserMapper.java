@@ -1,6 +1,8 @@
 package com.chance.mapper;
 
 import com.chance.entity.User;
+import com.chance.entity.dto.UserDto;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,5 +16,7 @@ import java.util.List;
  */
 public interface UserMapper {
 
-    List<User> queryAllUsers();
+    List<UserDto> queryAllUsers();
+
+    void insertUser(User user);
 }

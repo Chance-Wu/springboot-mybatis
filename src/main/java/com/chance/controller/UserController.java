@@ -3,6 +3,8 @@ package com.chance.controller;
 
 import com.chance.common.api.CommonRsp;
 import com.chance.component.RedisUtils;
+import com.chance.entity.User;
+import com.chance.entity.dto.UserDto;
 import com.chance.entity.vo.DemoUser;
 import com.chance.service.IUserService;
 import io.swagger.annotations.Api;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * <p>
@@ -106,4 +109,14 @@ public class UserController {
         return "success";
     }
 
+    @PostMapping(value = "/queryAllUsers")
+    public List<UserDto> queryAllUsers() {
+        List<UserDto> users = userService.queryAllUsers();
+        return users;
+    }
+
+    @PostMapping(value = "/insert")
+    public void insert(@RequestBody User user) {
+        userService.insertUser(user);
+    }
 }
