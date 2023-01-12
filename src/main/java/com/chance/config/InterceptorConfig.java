@@ -2,10 +2,19 @@ package com.chance.config;
 
 import com.chance.interceptor.ApiIdempotentInterceptor;
 import com.chance.interceptor.AuthenticationInterceptor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * <p>
@@ -24,6 +33,25 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(authenticationInterceptor())
                 .addPathPatterns("/auth/**");
         registry.addInterceptor(apiIdempotentInterceptor());
+    }
+
+    /**
+     *
+     * @param converters
+     */
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        // 设置Date类型字段序列化方式
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.SIMPLIFIED_CHINESE));
+
+        // 指定BigDecimal类型字段使用自定义的CustomDoubleSerialize序列化器
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(BigDecimal.class, new CustomDoubleSerialize());
+        objectMapper.registerModule(simpleModule);
+
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(objectMapper);
+        converters.add(converter);
     }
 
     @Bean

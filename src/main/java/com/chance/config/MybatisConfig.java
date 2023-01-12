@@ -1,7 +1,10 @@
 package com.chance.config;
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
+import com.chance.plugin.CustomQueryPagePlugin;
+import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
+import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -62,9 +65,12 @@ public class MybatisConfig {
         configuration.setMapUnderscoreToCamelCase(true);
         // 日志具体实现
         configuration.setLogImpl(StdOutImpl.class);
+        configuration.setCacheEnabled(false);
         factoryBean.setConfiguration(configuration);
 
         //分页插件
+        CustomQueryPagePlugin queryPagePlugin = new CustomQueryPagePlugin();
+        factoryBean.setPlugins(new Interceptor[]{queryPagePlugin});
 
         //添加XML目录（mapper的xml形式文件位置必须要配置）
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();

@@ -1,6 +1,5 @@
 package com.chance.util;
 
-import com.chance.entity.User;
 import com.chance.entity.dto.UserDto;
 import com.chance.mapper.UserMapper;
 import org.apache.ibatis.io.Resources;

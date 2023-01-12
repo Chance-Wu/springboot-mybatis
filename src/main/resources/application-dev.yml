@@ -1,8 +1,5 @@
 server:
-  port: 8081
-#  tomcat:
-#    threads:
-#      max: 1
+  port: 8091
 
 spring:
   profiles:
@@ -41,12 +38,12 @@ spring:
       # 合并多个DruidDataSource的监控数据
       use-global-data-source-stat: true
 
-  rabbitmq:
-    host: 127.0.0.1
-    port: 5672
-    username: guest
-    password: guest
-    virtual-host: vhost
+#  rabbitmq:
+#    host: 127.0.0.1
+#    port: 5672
+#    username: guest
+#    password: guest
+#    virtual-host: vhost
 
 #######################tk mybatis##########################
 #mybatis:
@@ -56,11 +53,11 @@ spring:
 #  type-aliases-package: com.chance.entity
 #  mapper-locations: classpath*:/mapper/*.xml
 
-#pagehelper:
-#  helper-dialect: mysql
-#  reasonable: true
-#  support-methods-arguments:
-#  params: count=countSql
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments:
+  params: count=countSql
 ########################################################
 
 ####################### mybatis-plus ##########################
@@ -82,10 +79,6 @@ spring:
 
 jwt:
   expire: 3600
-
-
-
-
 
 
 
