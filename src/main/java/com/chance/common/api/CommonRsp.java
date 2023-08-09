@@ -21,6 +21,22 @@ public class CommonRsp<T> {
         return rsp;
     }
 
+    public static <T> CommonRsp success(T body) {
+        CommonRsp<Object> rsp = new CommonRsp<>();
+        rsp.setCode(ResultCode.SUCCESS.getCode());
+        rsp.setMessage(ResultCode.SUCCESS.getMessage());
+        rsp.setBody(body);
+        return rsp;
+    }
+
+    public static CommonRsp error(String errorMsg) {
+        CommonRsp<Object> rsp = new CommonRsp<>();
+        rsp.setCode(ResultCode.FAIL.getCode());
+        rsp.setMessage(ResultCode.FAIL.getMessage());
+        rsp.setBody(errorMsg);
+        return rsp;
+    }
+
     public CommonRsp() {
     }
 

@@ -10,6 +10,7 @@ package com.chance.common.api;
  */
 public enum ResultCode {
     SUCCESS(200, "操作成功"),
+    FAIL(500, "操作失败"),
     ILLEGAL_ARGUMENT(10000, "参数不合法"),
     REPETITIVE_OPERATION(10001, "请勿重复操作"),
     ;

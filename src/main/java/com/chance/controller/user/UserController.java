@@ -8,6 +8,9 @@ import com.chance.entity.User;
 import com.chance.entity.dto.UserDto;
 import com.chance.entity.vo.DemoUser;
 import com.chance.service.IUserService;
+import com.chance.util.BeanUtils;
+import com.chance.util.JacksonBundle;
+import com.chance.util.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -68,10 +71,15 @@ public class UserController {
         return "success";
     }
 
-    @RequestMapping("/addUser3")
-    public String addUser3(DemoUser user) {
+    @PostMapping("/addUser3")
+    public String addUser3(@RequestBody DemoUser user) {
         System.out.println("username is:" + user.getUsername());
         System.out.println("password is:" + user.getPassword());
+        DemoUser demoUser = new DemoUser();
+        demoUser.setUsername("wcy");
+        demoUser.setPassword("123");
+        BeanUtils.copyPropertiesNotNull(user,demoUser);
+        System.out.println("birth is:" + JacksonBundle.nonNullMapper().toJson(demoUser));
         return "success";
     }
 

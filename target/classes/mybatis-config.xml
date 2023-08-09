@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+    <!-- MyBatis中的配置，不但有类型限制，还有顺序限制。-->
+
+    <!-- 1.全局配置参数 -->
+    <settings>
+        <!-- 指定 MyBatis 所用日志的具体实现，未指定时将自动查找 -->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!-- 开启自动驼峰命名规则（camel case）映射 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <!-- 2.别名设置 -->
+    <typeAliases>
+        <package name="com.chance.entity"/>
+    </typeAliases>
+
+    <!-- 自定义类型处理器 -->
+    <typeHandlers>
+        <typeHandler handler="com.chance.handler.GeneralEnumHandler" javaType="com.chance.enums.SexEnum"/>
+    </typeHandlers>
+
+    <!--3、环境-->
+    <environments default="dev">
+        <!--开发环境-->
+        <environment id="dev">
+            <!--事务管理-->
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url"
+                          value="jdbc:mysql://localhost:3306/test?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf8&amp;characterSetResults=utf8&amp;useSSL=false"/>
+                <property name="username" value="root"/>
+                <property name="password" value="Wcy539976"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--4、mapper文件路径-->
+    <mappers>
+        <mapper resource="mapper/UserMapper.xml"/>
+    </mappers>
+</configuration>

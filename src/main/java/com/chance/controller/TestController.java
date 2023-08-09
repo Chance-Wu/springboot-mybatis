@@ -3,15 +3,20 @@ package com.chance.controller;
 
 import com.chance.common.annotation.ApiIdempotent;
 import com.chance.common.api.CommonRsp;
+import com.chance.component.i18n.I18nUtil;
 import com.chance.service.ApiIdempotentTokenService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +38,14 @@ public class TestController {
 
     @Autowired
     private ApiIdempotentTokenService apiIdempotentTokenService;
+
+    @Autowired
+    private I18nUtil i18nUtil;
+
+    @GetMapping("/hello")
+    public String hello() {
+        return i18nUtil.get("hello.world");
+    }
 
     /**
      * 获取token
@@ -77,5 +90,11 @@ public class TestController {
     }
 
 
+    @GetMapping("/cookie")
+    public void cookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
 
+        }
+    }
 }

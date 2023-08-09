@@ -1,9 +1,9 @@
 server:
-  port: 8091
+  port: 8081
 
 spring:
   profiles:
-    active: dev
+    active: uat
   datasource:
     #主数据源
     db1:
@@ -37,19 +37,6 @@ spring:
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
       # 合并多个DruidDataSource的监控数据
       use-global-data-source-stat: true
-  messages:
-    basename: i18n/messages
-    encoding: UTF-8
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-
-#  rabbitmq:
-#    host: 127.0.0.1
-#    port: 5672
-#    username: guest
-#    password: guest
-#    virtual-host: vhost
 
 #######################tk mybatis##########################
 #mybatis:
@@ -59,11 +46,11 @@ spring:
 #  type-aliases-package: com.chance.entity
 #  mapper-locations: classpath*:/mapper/*.xml
 
-pagehelper:
-  helper-dialect: mysql
-  reasonable: true
-  support-methods-arguments:
-  params: count=countSql
+#pagehelper:
+#  helper-dialect: mysql
+#  reasonable: true
+#  support-methods-arguments:
+#  params: count=countSql
 ########################################################
 
 ####################### mybatis-plus ##########################
@@ -85,3 +72,23 @@ pagehelper:
 
 jwt:
   expire: 3600
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
