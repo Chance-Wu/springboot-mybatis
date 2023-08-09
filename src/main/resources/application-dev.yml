@@ -85,3 +85,6 @@ pagehelper:
 
 jwt:
   expire: 3600
+
+file:
+  save-path: /Users/chenyang/Desktop/
