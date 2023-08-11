@@ -2,7 +2,7 @@ package com.chance.entity.dto;
 
 import com.chance.common.annotation.CustomSerializer;
 import com.chance.common.annotation.sensitive.UserNameRule;
-import com.chance.enums.SexEnum;
+import com.chance.common.enums.SexEnum;
 import lombok.Data;
 
 /**

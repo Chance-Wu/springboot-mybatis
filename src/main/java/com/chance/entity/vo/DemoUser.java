@@ -2,7 +2,7 @@ package com.chance.entity.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -14,8 +14,9 @@ import java.util.Date;
  * @author chance
  * @since 2020-08-25
  */
+// chain=true，开启链式编程
+@Accessors(chain = true, fluent = true)
 @Data
-@EqualsAndHashCode
 public class DemoUser {
 
     private String username;

@@ -1,5 +1,7 @@
 package com.chance.util;
 
+import com.chance.entity.vo.DemoUser;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,14 +16,9 @@ import java.util.TimeZone;
 public class Test {
 
     public static void main(String[] args) {
-        Date date = new Date();
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        df.setTimeZone(tz);
-        String format = df.format(date);
-        System.out.println(format);
+        DemoUser demoUser = new DemoUser();
+        demoUser.username("chance").password("***");
+        System.out.println(demoUser.username());
 
-
-        System.out.println("====测试");
     }
 }

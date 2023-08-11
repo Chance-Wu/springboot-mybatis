@@ -1,6 +1,8 @@
 package com.chance;
 
 import com.chance.component.CustomResourceLoader;
+import com.chance.service.UnifiedService;
+import io.lettuce.core.ScriptOutputType;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +14,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author chance
@@ -31,12 +34,12 @@ public class SpringbootMybatisApplication {
 
         String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
 
-        CustomResourceLoader customResourceLoader = (CustomResourceLoader) applicationContext.getBean("customResourceLoader");
+        /*CustomResourceLoader customResourceLoader = (CustomResourceLoader) applicationContext.getBean("customResourceLoader");
         try {
             customResourceLoader.showResourceData("https://www.clc.plus/fqa/100067.html");
         } catch (IOException e) {
             System.out.println(e);
-        }
+        }*/
     }
 
 }

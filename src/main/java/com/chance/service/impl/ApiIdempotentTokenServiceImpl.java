@@ -1,7 +1,7 @@
 package com.chance.service.impl;
 
-import com.chance.common.api.CommonRsp;
-import com.chance.common.api.ResultCode;
+import com.chance.common.CommonRsp;
+import com.chance.common.ResultCode;
 import com.chance.common.exception.BizException;
 import com.chance.component.RedisUtils;
 import com.chance.service.ApiIdempotentTokenService;

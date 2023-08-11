@@ -1,8 +1,7 @@
 package com.chance.controller.user;
 
 
-import com.alibaba.fastjson.JSON;
-import com.chance.common.api.CommonRsp;
+import com.chance.common.CommonRsp;
 import com.chance.component.RedisUtils;
 import com.chance.entity.User;
 import com.chance.entity.dto.UserDto;
@@ -10,7 +9,6 @@ import com.chance.entity.vo.DemoUser;
 import com.chance.service.IUserService;
 import com.chance.util.BeanUtils;
 import com.chance.util.JacksonBundle;
-import com.chance.util.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -73,11 +71,11 @@ public class UserController {
 
     @PostMapping("/addUser3")
     public String addUser3(@RequestBody DemoUser user) {
-        System.out.println("username is:" + user.getUsername());
-        System.out.println("password is:" + user.getPassword());
+        System.out.println("username is:" + user.username());
+        System.out.println("password is:" + user.password());
         DemoUser demoUser = new DemoUser();
-        demoUser.setUsername("wcy");
-        demoUser.setPassword("123");
+        demoUser.username("wcy");
+        demoUser.password("123");
         BeanUtils.copyPropertiesNotNull(user,demoUser);
         System.out.println("birth is:" + JacksonBundle.nonNullMapper().toJson(demoUser));
         return "success";
@@ -92,8 +90,8 @@ public class UserController {
 
     @PostMapping("/addUser5")
     public String addUser5(@ModelAttribute("user") DemoUser user) {
-        System.out.println("username is:" + user.getUsername());
-        System.out.println("password is:" + user.getPassword());
+        System.out.println("username is:" + user.username());
+        System.out.println("password is:" + user.password());
         return "success";
     }
 
@@ -106,8 +104,8 @@ public class UserController {
 
     @RequestMapping(value = "/addUser7")
     public String addUser7(@RequestBody DemoUser user) {
-        System.out.println("username is:" + user.getUsername());
-        System.out.println("password is:" + user.getPassword());
+        System.out.println("username is:" + user.username());
+        System.out.println("password is:" + user.password());
         return "success";
     }
 

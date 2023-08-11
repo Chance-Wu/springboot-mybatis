@@ -2,14 +2,14 @@ package com.chance.controller;
 
 
 import com.chance.common.annotation.ApiIdempotent;
-import com.chance.common.api.CommonRsp;
+import com.chance.common.CommonRsp;
+import com.chance.component.EventContextAdaptor;
 import com.chance.component.i18n.I18nUtil;
 import com.chance.service.ApiIdempotentTokenService;
+import com.chance.service.UnifiedService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +41,9 @@ public class TestController {
 
     @Autowired
     private I18nUtil i18nUtil;
+    
+    @Autowired
+    private EventContextAdaptor eventContextAdaptor;
 
     @GetMapping("/hello")
     public String hello() {
@@ -96,5 +99,15 @@ public class TestController {
         for (Cookie cookie : cookies) {
 
         }
+    }
+
+    @GetMapping("/unified")
+    public void event() {
+        UnifiedService memberService = eventContextAdaptor.getEventServiceByType("memberEvent");
+        String res1 = memberService.executeEvent();
+        System.out.println(res1);
+        UnifiedService couponService = eventContextAdaptor.getEventServiceByType("couponEvent");
+        String res2 = couponService.executeEvent();
+        System.out.println(res2);
     }
 }

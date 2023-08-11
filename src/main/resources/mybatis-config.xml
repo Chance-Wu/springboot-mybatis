@@ -20,7 +20,7 @@
 
     <!-- 自定义类型处理器 -->
     <typeHandlers>
-        <typeHandler handler="com.chance.handler.GeneralEnumHandler" javaType="com.chance.enums.SexEnum"/>
+        <typeHandler handler="com.chance.handler.GeneralEnumHandler" javaType="com.chance.common.enums.SexEnum"/>
     </typeHandlers>
 
     <!--3、环境-->

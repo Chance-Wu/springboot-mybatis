@@ -1,6 +1,6 @@
 package com.chance.service;
 
-import com.chance.common.api.CommonRsp;
+import com.chance.common.CommonRsp;
 
 import javax.servlet.http.HttpServletRequest;
 

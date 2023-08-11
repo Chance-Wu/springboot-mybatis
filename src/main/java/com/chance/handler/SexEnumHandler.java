@@ -1,6 +1,6 @@
 package com.chance.handler;
 
-import com.chance.enums.SexEnum;
+import com.chance.common.enums.SexEnum;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 

@@ -1,6 +1,6 @@
 package com.chance.controller;
 
-import com.chance.common.api.CommonRsp;
+import com.chance.common.CommonRsp;
 import com.chance.entity.dto.PicUploadResult;
 import com.chance.service.FileUploadService;
 import org.springframework.util.StringUtils;

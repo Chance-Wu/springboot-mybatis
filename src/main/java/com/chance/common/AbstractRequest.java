@@ -1,4 +1,4 @@
-package com.chance.common.api;
+package com.chance.common;
 
 import java.io.Serializable;
 

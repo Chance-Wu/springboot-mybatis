@@ -1,6 +1,6 @@
 package com.chance.common.exception;
 
-import com.chance.common.api.CommonRsp;
+import com.chance.common.CommonRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

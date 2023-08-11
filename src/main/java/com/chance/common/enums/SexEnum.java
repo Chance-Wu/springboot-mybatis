@@ -1,4 +1,4 @@
-package com.chance.enums;
+package com.chance.common.enums;
 
 /**
  * @description: 性别枚举
