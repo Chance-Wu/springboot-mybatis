@@ -82,9 +82,9 @@
         </dependency>
 
         <!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-amqp</artifactId>-->
-<!--        </dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-amqp</artifactId>-->
+        <!--        </dependency>-->
 
         <!-- 微信公众号 -->
         <dependency>
@@ -125,11 +125,11 @@
         </dependency>
 
         <!--mybatis plus-->
-<!--        <dependency>-->
-<!--            <groupId>com.baomidou</groupId>-->
-<!--            <artifactId>mybatis-plus-boot-starter</artifactId>-->
-<!--            <version>3.3.2</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.baomidou</groupId>-->
+        <!--            <artifactId>mybatis-plus-boot-starter</artifactId>-->
+        <!--            <version>3.3.2</version>-->
+        <!--        </dependency>-->
         <!--freemarker模板引擎-->
         <dependency>
             <groupId>org.freemarker</groupId>
@@ -137,11 +137,11 @@
             <version>2.3.29</version>
         </dependency>
         <!--添加 代码生成器依赖-->
-<!--        <dependency>-->
-<!--            <groupId>com.baomidou</groupId>-->
-<!--            <artifactId>mybatis-plus-generator</artifactId>-->
-<!--            <version>3.3.2</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.baomidou</groupId>-->
+        <!--            <artifactId>mybatis-plus-generator</artifactId>-->
+        <!--            <version>3.3.2</version>-->
+        <!--        </dependency>-->
         <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -353,23 +353,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
-            <!--&lt;!&ndash;mapstruct插件&ndash;&gt;-->
-            <!--<plugin>-->
-            <!--    <groupId>org.apache.maven.plugins</groupId>-->
-            <!--    <artifactId>maven-compiler-plugin</artifactId>-->
-            <!--    <version>3.8.1</version>-->
-            <!--    <configuration>-->
-            <!--        <source>1.8</source>-->
-            <!--        <target>1.8</target>-->
-            <!--        <annotationProcessorPaths>-->
-            <!--            <path>-->
-            <!--                <groupId>org.mapstruct</groupId>-->
-            <!--                <artifactId>mapstruct-processor</artifactId>-->
-            <!--            </path>-->
-            <!--        </annotationProcessorPaths>-->
-            <!--    </configuration>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 
