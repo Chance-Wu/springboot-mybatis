@@ -123,7 +123,7 @@ public class DistributedLock implements Lock {
 
     @Override
     public void lockInterruptibly() throws InterruptedException {
-
+        // comment explaining why the method is empty
     }
 
     @Override

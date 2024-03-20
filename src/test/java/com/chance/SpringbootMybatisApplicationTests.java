@@ -12,10 +12,10 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @SpringBootTest
-class SpringbootMybatisApplicationTests {
+public class SpringbootMybatisApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
     }
 
     private final static String lockKey = "lock";
@@ -23,7 +23,7 @@ class SpringbootMybatisApplicationTests {
     private final static int leaseTime = 10;
 
     @Test
-    void redissonTest() {
+    public void redissonTest() {
         // 1.构造redis配置
         Config config = new Config();
         config.useSingleServer()

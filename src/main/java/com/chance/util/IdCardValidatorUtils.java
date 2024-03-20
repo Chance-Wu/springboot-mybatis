@@ -10,6 +10,8 @@ package com.chance.util;
  */
 public class IdCardValidatorUtils {
 
+    private IdCardValidatorUtils() {
+    }
 
     public static boolean isValidate18Idcard(String toString) {
         //TODO

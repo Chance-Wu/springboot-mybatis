@@ -36,8 +36,7 @@ public class SexEnumHandler extends BaseTypeHandler<SexEnum> {
     public SexEnum getNullableResult(ResultSet rs, String columnName) throws SQLException {
         String code = rs.getString(columnName);
         //处理返回参数的枚举类型的状态码，根据状态码返回对应的枚举
-        SexEnum status = SexEnum.getSexEnumByCode(code);
-        return status;
+        return SexEnum.getSexEnumByCode(code);
     }
 
     @Override

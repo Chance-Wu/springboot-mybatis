@@ -1,7 +1,6 @@
 package com.chance.entity.vo;
 
 import com.chance.common.validator.IdentityCardNumber;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;

@@ -18,7 +18,7 @@ import java.util.Date;
  */
 public class JwtUtils {
 
-    public JwtUtils() {
+    private JwtUtils() {
     }
 
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
@@ -28,7 +28,7 @@ public class JwtUtils {
         String modules = "";
         String privateExponent = "";
         // 以上不能保证数据被恶意篡改，原始数据和哈希值都可能被恶意篡改，要保证不被篡改，可以使用RSA 公钥私钥方案，再配合哈希值。
-        PRIVATE_KEY = RSAUtils.getPrivateKey(modules, privateExponent);
+        PRIVATE_KEY = RSAUtils.getPrivateKey(modules);
     }
 
     /***
@@ -50,7 +50,7 @@ public class JwtUtils {
         try {
             Claims claims = Jwts.parser().setSigningKey(PRIVATE_KEY).parseClaimsJws(token).getBody();
             String sub = claims.get("sub", String.class);
-            logger.debug("token.sub : " + sub);
+            logger.debug("token.sub:{}", sub);
             return new JwtResult(true, sub, "合法请求", HttpStatus.OK.value());
         } catch (ExpiredJwtException e) {
             // 在解析JWT字符串时，如果'过期时间字段'早于当前时间，将会抛出异常，说明本次请求已经失效
@@ -59,7 +59,7 @@ public class JwtUtils {
             // 在解析JWT字符串时，如果秘钥不正确，将会解析失败，抛出异常，说明该JWT字符串是伪造的
             return new JwtResult(false, null, "非法请求", HttpStatus.FORBIDDEN.value());
         } catch (Exception e) {
-            return new JwtResult(false, null, "非法请求", HttpStatus.FORBIDDEN.value());
+            return new JwtResult(false, null, "非法请求" + e.getMessage(), HttpStatus.FORBIDDEN.value());
         }
     }
 

@@ -22,6 +22,6 @@ public class IdentityCardNumberValidator implements ConstraintValidator<Identity
 
     @Override
     public void initialize(IdentityCardNumber constraintAnnotation) {
-
+        // comment explaining why the method is empty
     }
 }

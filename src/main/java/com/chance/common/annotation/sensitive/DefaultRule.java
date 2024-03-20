@@ -10,6 +10,6 @@ public class DefaultRule extends BaseRule {
 
     @Override
     void initRule() {
-
+        // comment explaining why the method is empty
     }
 }

@@ -22,7 +22,7 @@ public class DistributedLockFactory {
     private String uuid;
 
     public DistributedLockFactory() {
-        this.uuid = UUID.randomUUID().toString().replaceAll("-", "").toString();
+        this.uuid = UUID.randomUUID().toString().replace("-", "");
     }
 
     public DistributedLock getRedisLock(String lockName) {

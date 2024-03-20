@@ -18,6 +18,9 @@ import java.security.spec.RSAPrivateKeySpec;
  */
 public class RSAUtils {
 
+    private RSAUtils() {
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(RSAUtils.class);
 
     /**
@@ -27,7 +30,7 @@ public class RSAUtils {
      * @param exponent 指数
      * @return
      */
-    public static RSAPrivateKey getPrivateKey(String modules, String exponent) {
+    public static RSAPrivateKey getPrivateKey(String modules) {
         try {
             BigInteger b1 = new BigInteger(modules);
             BigInteger b2 = new BigInteger(modules);

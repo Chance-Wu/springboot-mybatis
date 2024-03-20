@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,10 +71,10 @@ public class RedisUtils {
      * @return
      */
     public Boolean del(String key) {
-        if (exists(key)) {
+        if (Boolean.TRUE.equals(exists(key))) {
             return redisTemplate.delete(key);
         } else {
-            logger.error("del key:{}", key + " 不存在");
+            logger.error(MessageFormat.format("del key:{0} 不存在", key));
             return false;
         }
 

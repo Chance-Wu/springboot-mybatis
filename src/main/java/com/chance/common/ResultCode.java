@@ -27,7 +27,7 @@ public enum ResultCode {
         return code;
     }
 
-    public void setCode(long code) {
+    private void setCode(long code) {
         this.code = code;
     }
 
@@ -35,7 +35,7 @@ public enum ResultCode {
         return message;
     }
 
-    public void setMessage(String message) {
+    private void setMessage(String message) {
         this.message = message;
     }
 }

@@ -163,8 +163,6 @@ public class JacksonBundle {
             return (T) mapper.readerForUpdating(object).readValue(jsonString);
         } catch (JsonProcessingException e) {
             logger.warn("update json string:" + jsonString + " to object:" + object + " error.", e);
-        } catch (IOException e) {
-            logger.warn("update json string:" + jsonString + " to object:" + object + " error.", e);
         }
         return null;
     }

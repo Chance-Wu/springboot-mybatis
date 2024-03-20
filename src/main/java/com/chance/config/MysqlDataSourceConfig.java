@@ -71,7 +71,7 @@ public class MysqlDataSourceConfig {
 
         //分页插件
         CustomQueryPagePlugin queryPagePlugin = new CustomQueryPagePlugin();
-        factoryBean.setPlugins(new Interceptor[]{queryPagePlugin});
+        factoryBean.setPlugins(queryPagePlugin);
 
         //添加XML目录（mapper的xml形式文件位置必须要配置）
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();

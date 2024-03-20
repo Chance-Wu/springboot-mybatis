@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.List;
 @RequestMapping("/auth/user")
 public class UserController {
 
-    @Autowired
+    @Resource
     private RedisUtils redisUtils;
 
     @Autowired
@@ -55,8 +56,8 @@ public class UserController {
     @ApiOperation(value = "select", notes = "查询")
     @RequestMapping("/addUser1")
     public String addUser1(String username, String password) {
-        System.out.println("username is:" + username);
-        System.out.println("password is:" + password);
+        log.info("username is:{}", username);
+        log.info("password is:{}", password);
         return "success";
     }
 
@@ -64,48 +65,48 @@ public class UserController {
     public String addUser2(HttpServletRequest request) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        System.out.println("username is:" + username);
-        System.out.println("password is:" + password);
+        log.info("username is:{}", username);
+        log.info("password is:{}", password);
         return "success";
     }
 
     @PostMapping("/addUser3")
     public String addUser3(@RequestBody DemoUser user) {
-        System.out.println("username is:" + user.username());
-        System.out.println("password is:" + user.password());
+        log.info("username is:{}", user.username());
+        log.info("password is:{}", user.password());
         DemoUser demoUser = new DemoUser();
         demoUser.username("wcy");
         demoUser.password("123");
         BeanUtils.copyPropertiesNotNull(user,demoUser);
-        System.out.println("birth is:" + JacksonBundle.nonNullMapper().toJson(demoUser));
+        log.info("birth is:" + JacksonBundle.nonNullMapper().toJson(demoUser));
         return "success";
     }
 
     @GetMapping("/addUser4/{username}/{password}")
     public String addUser4(@PathVariable String username, @PathVariable String password) {
-        System.out.println("username is:" + username);
-        System.out.println("password is:" + password);
+        log.info("username is:{}", username);
+        log.info("password is:{}", password);
         return "success";
     }
 
     @PostMapping("/addUser5")
     public String addUser5(@ModelAttribute("user") DemoUser user) {
-        System.out.println("username is:" + user.username());
-        System.out.println("password is:" + user.password());
+        log.info("username is:{}", user.username());
+        log.info("password is:{}", user.password());
         return "success";
     }
 
     @RequestMapping(value = "/addUser6")
     public String addUser6(@RequestParam("username") String username, @RequestParam("password") String password) {
-        System.out.println("username is:" + username);
-        System.out.println("password is:" + password);
+        log.info("username is:{}", username);
+        log.info("password is:{}", password);
         return "success";
     }
 
     @RequestMapping(value = "/addUser7")
     public String addUser7(@RequestBody DemoUser user) {
-        System.out.println("username is:" + user.username());
-        System.out.println("password is:" + user.password());
+        log.info("username is:{}", user.username());
+        log.info("password is:{}", user.password());
         return "success";
     }
 
@@ -113,8 +114,8 @@ public class UserController {
     public String addUser8(@RequestBody HashMap map) {
         String username = (String) map.get("username");
         String password = (String) map.get("password");
-        System.out.println("username is:" + username);
-        System.out.println("password is:" + password);
+        log.info("username is:{}", username);
+        log.info("password is:{}", password);
 
         return "success";
     }

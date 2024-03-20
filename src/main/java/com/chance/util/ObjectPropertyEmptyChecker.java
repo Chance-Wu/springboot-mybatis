@@ -1,6 +1,8 @@
 package com.chance.util;
 
 import com.chance.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 
@@ -12,6 +14,9 @@ import java.lang.reflect.Field;
  * @date 2023/9/22 09:51
  */
 public class ObjectPropertyEmptyChecker {
+
+    private static final Logger log = LoggerFactory.getLogger(ObjectPropertyEmptyChecker.class);
+
     public static boolean areAllFieldsEmpty(Object obj) {
         if (obj == null) {
             // 如果对象本身为空，则所有属性都为空
@@ -44,6 +49,6 @@ public class ObjectPropertyEmptyChecker {
         // 检查属性是否为空
         boolean allFieldsEmpty = areAllFieldsEmpty(user);
         // 输出结果
-        System.out.println("All fields are empty: " + allFieldsEmpty);
+        log.info("All fields are empty:{}", allFieldsEmpty);
     }
 }

@@ -16,7 +16,7 @@ public class SecurityContext implements ApplicationContextAware {
 
     ApplicationContext applicationContext;
 
-    public SecurityContext() {
+    private SecurityContext() {
     }
 
     @Override

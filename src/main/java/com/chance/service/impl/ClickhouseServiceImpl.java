@@ -24,7 +24,6 @@ public class ClickhouseServiceImpl implements ClickhouseService {
     public List<Menu> queryMenusByDate(String date) {
         Example example = new Example(Menu.class);
         example.createCriteria().andEqualTo("date", "1900-04-15");
-        List<Menu> menus = menuMapper.selectByExample(example);
-        return menus;
+        return menuMapper.selectByExample(example);
     }
 }
