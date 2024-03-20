@@ -1,24 +1,24 @@
 package com.chance.controller;
 
 
-import com.chance.common.annotation.ApiIdempotent;
 import com.chance.common.CommonRsp;
+import com.chance.common.annotation.ApiIdempotent;
 import com.chance.component.EventContextAdaptor;
 import com.chance.component.i18n.I18nUtil;
+import com.chance.entity.User;
+import com.chance.entity.dto.UserDto;
 import com.chance.service.ApiIdempotentTokenService;
+import com.chance.service.IUserService;
 import com.chance.service.UnifiedService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -34,16 +34,19 @@ import java.util.Map;
 @RequestMapping
 public class TestController {
 
-    private ThreadLocal<Integer> currentUser = ThreadLocal.withInitial(() -> null);
+    private final ThreadLocal<Integer> currentUser = ThreadLocal.withInitial(() -> null);
 
     @Autowired
     private ApiIdempotentTokenService apiIdempotentTokenService;
 
     @Autowired
     private I18nUtil i18nUtil;
-    
+
     @Autowired
     private EventContextAdaptor eventContextAdaptor;
+
+    @Autowired
+    private IUserService userService;
 
     @GetMapping("/hello")
     public String hello() {
@@ -54,7 +57,7 @@ public class TestController {
      * 获取token
      */
     @RequestMapping("/getToken")
-    public CommonRsp getToken() {
+    public CommonRsp<String> getToken() {
         return apiIdempotentTokenService.createToken();
     }
 
@@ -63,13 +66,13 @@ public class TestController {
      */
     @ApiIdempotent
     @RequestMapping("/testIdempotent")
-    public CommonRsp testIdempotent() {
+    public CommonRsp<Object> testIdempotent() {
         return CommonRsp.success();
     }
 
 
     @GetMapping("/wrong1")
-    public Map wrong(@RequestParam("userId") Integer userId) {
+    public Map<String,String> wrong(@RequestParam("userId") Integer userId) {
 
         try {
             //设置用户信息之前先查询一次ThreadLocal中的用户信息
@@ -82,7 +85,7 @@ public class TestController {
             String after = Thread.currentThread().getName() + ":" + currentUser.get();
 
             //汇总输出两次查询结果
-            Map result = new HashMap();
+            Map<String,String> result = new HashMap<>();
             result.put("before", before);
             result.put("after", after);
             return result;
@@ -97,7 +100,7 @@ public class TestController {
     public void cookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
-
+            log.info(String.valueOf(cookie));
         }
     }
 
@@ -105,9 +108,9 @@ public class TestController {
     public void event() {
         UnifiedService memberService = eventContextAdaptor.getEventServiceByType("memberEvent");
         String res1 = memberService.executeEvent();
-        System.out.println(res1);
+        log.info(res1);
         UnifiedService couponService = eventContextAdaptor.getEventServiceByType("couponEvent");
         String res2 = couponService.executeEvent();
-        System.out.println(res2);
+        log.info(res2);
     }
 }

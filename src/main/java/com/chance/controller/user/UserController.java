@@ -121,8 +121,8 @@ public class UserController {
 
     @PostMapping(value = "/queryAllUsers")
     public List<UserDto> queryAllUsers() {
-        List<UserDto> users = userService.queryAllUsers();
-        return users;
+        log.info(">>>>>>>> queryAllUsers controller");
+        return userService.queryAllUsers();
     }
 
     @PostMapping(value = "/insert")

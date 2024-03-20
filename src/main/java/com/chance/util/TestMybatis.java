@@ -1,7 +1,7 @@
 package com.chance.util;
 
 import com.chance.entity.dto.UserDto;
-import com.chance.mapper.UserMapper;
+import com.chance.mapper.mysql.UserMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

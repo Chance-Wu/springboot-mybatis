@@ -1,9 +1,7 @@
 package com.chance;
 
-import com.chance.component.CustomResourceLoader;
-import com.chance.service.UnifiedService;
-import io.lettuce.core.ScriptOutputType;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -13,12 +11,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.io.IOException;
-import java.util.Map;
-
 /**
  * @author chance
  */
+@EnableBatchProcessing
 @EnableAspectJAutoProxy
 //开启对异步方法的支持
 @EnableAsync(proxyTargetClass = true)

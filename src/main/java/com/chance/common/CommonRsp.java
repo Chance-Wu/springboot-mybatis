@@ -14,23 +14,23 @@ public class CommonRsp<T> {
     private String message;
     private T body;
 
-    public static CommonRsp success() {
+    public static CommonRsp<Object> success() {
         CommonRsp<Object> rsp = new CommonRsp<>();
         rsp.setCode(ResultCode.SUCCESS.getCode());
         rsp.setMessage(ResultCode.SUCCESS.getMessage());
         return rsp;
     }
 
-    public static <T> CommonRsp success(T body) {
-        CommonRsp<Object> rsp = new CommonRsp<>();
+    public static <T> CommonRsp<T> success(T body) {
+        CommonRsp<T> rsp = new CommonRsp<>();
         rsp.setCode(ResultCode.SUCCESS.getCode());
         rsp.setMessage(ResultCode.SUCCESS.getMessage());
         rsp.setBody(body);
         return rsp;
     }
 
-    public static CommonRsp error(String errorMsg) {
-        CommonRsp<Object> rsp = new CommonRsp<>();
+    public static CommonRsp<String> error(String errorMsg) {
+        CommonRsp<String> rsp = new CommonRsp<>();
         rsp.setCode(ResultCode.FAIL.getCode());
         rsp.setMessage(ResultCode.FAIL.getMessage());
         rsp.setBody(errorMsg);

@@ -3,6 +3,7 @@ package com.chance.controller;
 import com.chance.common.CommonRsp;
 import com.chance.entity.dto.PicUploadResult;
 import com.chance.service.FileUploadService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +24,7 @@ import java.util.Map;
  * @date 2023/5/27 15:30
  * @since 1.0
  */
+@Slf4j
 @RestController
 @RequestMapping("/file")
 public class FileUploadController {
@@ -36,7 +39,7 @@ public class FileUploadController {
     public CommonRsp uploadImg(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         boolean isFlag = false;
         for (String type : IMAGE_TYPE) {
-            System.out.println(file.getOriginalFilename());
+            log.info(file.getOriginalFilename());
             if (StringUtils.endsWithIgnoreCase(file.getOriginalFilename(), type)) {
                 isFlag = true;
                 break;
@@ -48,7 +51,7 @@ public class FileUploadController {
             boolean isLegal = picUploadResult.isLegal();
 
             if (isLegal) {
-                Map resMap = new HashMap<>();
+                Map<String, String> resMap = new HashMap<>();
                 resMap.put("imgPath", picUploadResult.getImgPath());
                 return CommonRsp.success(resMap);
             } else {
@@ -77,7 +80,7 @@ public class FileUploadController {
             boolean isLegal = picUploadResult.isLegal();
 
             if (isLegal) {
-                Map resMap = new HashMap<>();
+                Map<String, List<String>> resMap = new HashMap<>();
                 resMap.put("imgPaths", picUploadResult.getImgPaths());
                 return CommonRsp.success(resMap);
             } else {

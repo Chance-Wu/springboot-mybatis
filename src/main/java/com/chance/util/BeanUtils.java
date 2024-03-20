@@ -1,13 +1,7 @@
 package com.chance.util;
 
-/**
- * <p> BeanUtils </p>
- *
- * @author chance
- * @date 2023/5/3 14:13
- * @since 1.0
- */
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.beans.BeanInfo;
@@ -18,9 +12,18 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * BeanUtils用于属性拷贝
+ * <p> BeanUtils </p>
+ *
+ * @author chance
+ * @date 2023/5/3 14:13
+ * @since 1.0
  */
 public class BeanUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(BeanUtils.class);
+
+    private BeanUtils() {
+    }
 
     /**
      * Bean属性拷贝
@@ -85,17 +88,17 @@ public class BeanUtils {
                         && !filedName.equals("serialVersionUID")) {
 
                     String setMethodName = "set" + String.valueOf(firstWord).toUpperCase()
-                            + filedName.substring(1, filedName.length());
+                            + filedName.substring(1);
                     String getMethodName = "get" + String.valueOf(firstWord).toUpperCase()
-                            + filedName.substring(1, filedName.length());
-                    Method getMethod = source.getClass().getMethod(getMethodName, new Class[]{});
+                            + filedName.substring(1);
+                    Method getMethod = source.getClass().getMethod(getMethodName);
                     if (getMethod != null) {
-                        Object getValue = getMethod.invoke(source, new Object[]{});
+                        Object getValue = getMethod.invoke(source);
                         if (getValue != null && getMethod.getReturnType() != null) {
                             Method setMethod = target.getClass().getMethod(setMethodName,
-                                    new Class[]{getMethod.getReturnType()});
+                                    getMethod.getReturnType());
                             if (setMethod != null) {
-                                setMethod.invoke(target, new Object[]{getValue});
+                                setMethod.invoke(target, getValue);
                             }
                         }
                     }
@@ -125,7 +128,7 @@ public class BeanUtils {
 
         Field[] fileds = target.getClass().getDeclaredFields();
         Field[] sourceFile = source.getClass().getDeclaredFields();
-        List<String> sourceFiledNameList = new ArrayList<String>();
+        List<String> sourceFiledNameList = new ArrayList<>();
         for (int i = 0; i < sourceFile.length; i++) {
             String sourcefiledName = sourceFile[i].getName();
             sourceFiledNameList.add(sourcefiledName);
@@ -141,24 +144,24 @@ public class BeanUtils {
                         && !filedName.equals("hashCode") && !filedName.equals("serialVersionUID")) {
 
                     String setMethodName = "set" + String.valueOf(firstWord).toUpperCase()
-                            + filedName.substring(1, filedName.length());
+                            + filedName.substring(1);
                     String getMethodName = "get" + String.valueOf(firstWord).toUpperCase()
-                            + filedName.substring(1, filedName.length());
-                    Method getMethod = source.getClass().getMethod(getMethodName, new Class[]{});
+                            + filedName.substring(1);
+                    Method getMethod = source.getClass().getMethod(getMethodName);
                     if (getMethod != null) {
-                        Object getValue = getMethod.invoke(source, new Object[]{});
+                        Object getValue = getMethod.invoke(source);
                         if (getValue != null && getMethod.getReturnType() != null
                                 && !StringUtils.isEmpty(getValue.toString())) {
                             Method setMethod = target.getClass().getMethod(setMethodName,
-                                    new Class[]{getMethod.getReturnType()});
+                                    getMethod.getReturnType());
                             if (setMethod != null) {
-                                setMethod.invoke(target, new Object[]{getValue});
+                                setMethod.invoke(target, getValue);
                             }
                         }
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(">>>>>>>>error:", e);
             }
         }
     }

@@ -1,12 +1,5 @@
 package com.chance.util;
 
-import com.chance.entity.vo.DemoUser;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 /**
  * @description: Test
  * @author: chance
@@ -16,9 +9,20 @@ import java.util.TimeZone;
 public class Test {
 
     public static void main(String[] args) {
-        DemoUser demoUser = new DemoUser();
-        demoUser.username("chance").password("***");
-        System.out.println(demoUser.username());
+        /*Object obj = 10.5;
 
+        if (obj instanceof Double) {
+            double value = (double) obj;
+            System.out.println(value);
+        } else if (obj instanceof String) {
+            String str = (String) obj;
+            double value = Double.parseDouble(str);
+            System.out.println(value);
+        } else {
+            System.out.println("无法将对象转换为double类型");
+        }*/
+        String s= "3-1343d";
+        String b = s.substring(2);
+        System.out.println(b);
     }
 }

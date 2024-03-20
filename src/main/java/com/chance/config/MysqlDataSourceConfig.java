@@ -2,7 +2,6 @@ package com.chance.config;
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.chance.plugin.CustomQueryPagePlugin;
-import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -13,6 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -22,20 +22,21 @@ import javax.sql.DataSource;
 /**
  * <p>
  * Mybatis配置类
- * <p>
+ * <p>ClickHouseProperties
  *
  * @author chance
  * @since 2020-08-15
  */
-@MapperScan(basePackages = {"com.chance.mapper"}, sqlSessionFactoryRef = "sessionFactory1")
+@MapperScan(basePackages = {"com.chance.mapper.mysql"}, sqlSessionFactoryRef = "sessionFactory1")
 @ComponentScan
 @EnableTransactionManagement
 @Configuration
-public class MybatisConfig {
+public class MysqlDataSourceConfig {
 
+    @Primary
     @Bean("dataSource1")
     //@Primary //当有多个相同类型的bean时，使用@Primary来赋予bean更高的优先级
-    @ConfigurationProperties(prefix = "spring.datasource.db1")
+    @ConfigurationProperties(prefix = "spring.datasource.mysql.db1")
     public DataSource dataSource() {
         return DruidDataSourceBuilder.create().build();
     }
@@ -74,7 +75,7 @@ public class MybatisConfig {
 
         //添加XML目录（mapper的xml形式文件位置必须要配置）
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        factoryBean.setMapperLocations(resolver.getResources("classpath*:/mapper/*.xml"));
+        factoryBean.setMapperLocations(resolver.getResources("classpath*:/mapper/mysql/*.xml"));
         return factoryBean.getObject();
     }
 }

@@ -1,8 +1,7 @@
-package com.chance.mapper;
+package com.chance.mapper.mysql;
 
 import com.chance.entity.User;
 import com.chance.entity.dto.UserDto;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

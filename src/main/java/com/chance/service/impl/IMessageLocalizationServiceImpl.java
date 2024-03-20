@@ -2,9 +2,9 @@ package com.chance.service.impl;
 
 import com.chance.service.IMessageLocalizationService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import javax.annotation.Resource;
 import java.util.Locale;
 
 /**
@@ -16,7 +16,7 @@ import java.util.Locale;
 @Slf4j
 public class IMessageLocalizationServiceImpl implements IMessageLocalizationService {
 
-    @Autowired
+    @Resource
     private ResourceBundleMessageSource resourceBundleMessageSource;
 
     @Override
