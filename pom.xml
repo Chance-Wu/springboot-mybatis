@@ -24,14 +24,22 @@
         <skywalking.version>9.0.0</skywalking.version>
         <redisson-spring-boot-starter.version>3.16.0</redisson-spring-boot-starter.version>
         <clickhouse-jdbc.version>0.3.1-patch</clickhouse-jdbc.version>
+        <clickhouse-java.version>0.4.6</clickhouse-java.version>
     </properties>
 
     <dependencies>
 
-        <dependency>
+        <!--<dependency>
             <groupId>ru.yandex.clickhouse</groupId>
             <artifactId>clickhouse-jdbc</artifactId>
             <version>${clickhouse-jdbc.version}</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>com.clickhouse</groupId>
+            <artifactId>clickhouse-jdbc</artifactId>
+            <version>${clickhouse-java.version}</version>
+            <classifier>http</classifier>
         </dependency>
 
         <!-- Redisson -->

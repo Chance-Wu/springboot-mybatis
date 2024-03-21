@@ -39,7 +39,7 @@ spring:
       # 合并多个DruidDataSource的监控数据
       use-global-data-source-stat: true
     clickhouse:
-      driverClassName: ru.yandex.clickhouse.ClickHouseDriver
+      driverClassName: com.clickhouse.jdbc.ClickHouseDriver
       url: jdbc:clickhouse://127.0.0.1:8123/default
       username: chance
       password: Wcy539976

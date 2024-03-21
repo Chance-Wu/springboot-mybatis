@@ -30,7 +30,8 @@ public class ClickhouseServiceImpl implements ClickhouseService {
     @Override
     public void insert() {
         Menu menu = new Menu();
-        menu.setName("TEST");
+        menu.setId(99999L);
+        menu.setName("WCY");
         menu.setSponsor("LOHG BEACH HOTEL");
         menu.setEvent("DINNER");
         menu.setVenue("COMMERCIAL");
@@ -39,8 +40,13 @@ public class ClickhouseServiceImpl implements ClickhouseService {
         menu.setOccasion("DAILY;");
         menu.setNotes("ANIMAL FIGURE;");
         menu.setCallNumber("1900-4064");
+        menu.setKeywords("WCY");
+        menu.setLanguage("ENGLISH");
         menu.setDate("1900-08-16");
         menu.setLocation("Long Beach Hotel");
+        menu.setLocationType("Long Beach Hotel");
+        menu.setCurrency("Dollars");
+        menu.setCurrencySymbol("$");
         menu.setStatus("complete");
         menu.setPageCount(10L);
         menu.setDishCount(10L);
