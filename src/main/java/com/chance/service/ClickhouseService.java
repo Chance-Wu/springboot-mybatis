@@ -11,4 +11,6 @@ import java.util.List;
  */
 public interface ClickhouseService {
     List<Menu> queryMenusByDate(String date);
+
+    void insert();
 }

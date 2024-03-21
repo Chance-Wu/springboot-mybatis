@@ -32,4 +32,11 @@ public class ClickHouseController {
         List<Menu> menus = clickhouseService.queryMenusByDate(date);
         return "success";
     }
+
+    @ApiOperation(value = "insert", notes = "写入")
+    @RequestMapping("/insert")
+    public String insert() {
+        clickhouseService.insert();
+        return "success";
+    }
 }
