@@ -25,9 +25,16 @@
         <redisson-spring-boot-starter.version>3.16.0</redisson-spring-boot-starter.version>
         <clickhouse-jdbc.version>0.3.1-patch</clickhouse-jdbc.version>
         <clickhouse-java.version>0.4.6</clickhouse-java.version>
+        <JavaEWAH.version>1.1.0</JavaEWAH.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.googlecode.javaewah</groupId>
+            <artifactId>JavaEWAH</artifactId>
+            <version>${JavaEWAH.version}</version>
+        </dependency>
 
         <!--<dependency>
             <groupId>ru.yandex.clickhouse</groupId>
@@ -105,24 +112,24 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.9.1</version>
+            <version>4.10.0</version>
         </dependency>
 
         <!--for excel component-->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.9</version>
+            <version>5.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.9</version>
+            <version>5.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml-schemas</artifactId>
-            <version>3.9</version>
+            <version>4.1.2</version>
         </dependency>
 
         <!--springboot mybatis起步依赖-->

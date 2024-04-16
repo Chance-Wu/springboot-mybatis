@@ -27,7 +27,6 @@ public class RSAUtils {
      * 使用模和指数生成RSA私钥 注意：【此代码用了默认补位方式，为RSA/None/PKCS1Padding，不同的JDK默认的补位方式可能不同】
      *
      * @param modules 模
-     * @param exponent 指数
      * @return
      */
     public static RSAPrivateKey getPrivateKey(String modules) {

@@ -2,6 +2,7 @@ package com.chance.common.exception;
 
 import com.chance.common.CommonRsp;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,7 @@ import javax.validation.ValidationException;
  */
 @Slf4j
 @RestControllerAdvice
+@Primary
 public class GlobalExceptionHandler {
 
     private static int DUPLICATE_KEY_CODE = 1001;

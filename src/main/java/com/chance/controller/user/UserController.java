@@ -135,5 +135,4 @@ public class UserController {
     public String redirect() {
         return "redirect:"+"http://localhost:8091/auth/user/queryAllUsers";
     }
-
 }
