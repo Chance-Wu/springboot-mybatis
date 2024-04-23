@@ -123,3 +123,7 @@ skywalking:
     collector:
       grpc:
         server-address: 0.0.0.0:11800
+
+okhttp:
+  connectionTimeout: 3000
+  readTimeout: 3000
