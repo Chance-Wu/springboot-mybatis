@@ -1,8 +1,8 @@
 package com.chance.controller.redisson;
 
 import com.chance.common.CommonRsp;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.RedissonMultiLock;
 import org.redisson.RedissonRedLock;
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2024/3/7 15:23
  */
 
-@Api(tags = "Redis")
+@Tag(name = "Redis")
 @RestController
 @RequestMapping("/testRedisson")
 @Slf4j
@@ -36,7 +36,7 @@ public class TestRedissonController {
     // 用于Redis集群架构下，这些节点是完全独立的，所以不使用复制或任何其他隐式协调系统
     // 该对象可以用来将多个RLock对象关联为一个红锁，每个RLock对象实例可以来自于不同的Redisson实例
     @GetMapping("/testRedLock")
-    @ApiOperation("红锁")
+    @Operation(summary = "红锁")
     public CommonRsp testRedLock(@RequestParam Long id) {
         String threadName = Thread.currentThread().getName();
         RLock one = redissonClient.getLock("one_" + id);
@@ -60,7 +60,7 @@ public class TestRedissonController {
     }
 
     @GetMapping("/testFairLock")
-    @ApiOperation("公平锁")
+    @Operation(summary = "公平锁")
     public CommonRsp testFairLock(@RequestParam Long goodsId) {
         RLock fairLock = redissonClient.getFairLock("fairLock_" + goodsId);
         String threadName = Thread.currentThread().getName();
@@ -87,7 +87,7 @@ public class TestRedissonController {
     }
 
     @GetMapping("/testRedisson")
-    @ApiOperation("非公平锁")
+    @Operation(summary = "非公平锁")
     public CommonRsp testRedisson(@RequestParam Long goodsId) {
         RLock lock = redissonClient.getLock("lock_" + goodsId);
         String threadName = Thread.currentThread().getName();

@@ -3,6 +3,9 @@ package com.chance.controller;
 import com.chance.common.CommonRsp;
 import com.chance.entity.dto.PicUploadResult;
 import com.chance.service.FileUploadService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +27,7 @@ import java.util.Map;
  * @date 2023/5/27 15:30
  * @since 1.0
  */
+@Tag(name = "文件上传")
 @Slf4j
 @RestController
 @RequestMapping("/file")
@@ -36,6 +40,11 @@ public class FileUploadController {
     private FileUploadService fileUploadService;
 
     @PostMapping("/uploadImg")
+    @Operation(
+            summary = "上传图片",
+            parameters = {
+                    @Parameter(name = "file", required = true, description = "要上传的图片文件"),
+                    @Parameter(name = "request", required = true, description = "请求体参数")})
     public CommonRsp uploadImg(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         boolean isFlag = false;
         for (String type : IMAGE_TYPE) {

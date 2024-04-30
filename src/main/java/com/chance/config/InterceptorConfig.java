@@ -31,12 +31,16 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // 添加自定义的拦截器，设置拦截的过滤路径规则
         registry.addInterceptor(authenticationInterceptor())
-                .addPathPatterns("/auth/**");
+                .addPathPatterns("/auth/**")
+                .excludePathPatterns(getExclude());
         registry.addInterceptor(apiIdempotentInterceptor());
     }
 
+    public String[] getExclude() {
+        return new String[]{"/v3/api-docs", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**"};
+    }
+
     /**
-     *
      * @param converters
      */
     @Override

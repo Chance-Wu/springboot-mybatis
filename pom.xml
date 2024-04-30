@@ -26,9 +26,31 @@
         <clickhouse-jdbc.version>0.3.1-patch</clickhouse-jdbc.version>
         <clickhouse-java.version>0.4.6</clickhouse-java.version>
         <JavaEWAH.version>1.1.0</JavaEWAH.version>
+        <spring-cloud-starter-openfeign.version>2.2.6.RELEASE</spring-cloud-starter-openfeign.version>
+        <httpclient.version>4.5.13</httpclient.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>${spring-cloud-starter-openfeign.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
@@ -239,7 +261,7 @@
         </dependency>
 
         <!--Swagger-UI API文档生成工具-->
-        <dependency>
+        <!--<dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>2.7.0</version>
@@ -248,7 +270,7 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.7.0</version>
-        </dependency>
+        </dependency>-->
 
         <!--注意版本问题-->
         <!--jsr 303-->

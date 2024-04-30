@@ -3,8 +3,8 @@ package com.chance.controller.distributedlock;
 import com.chance.common.CommonRsp;
 import com.chance.component.lock.DistributedLock;
 import com.chance.component.lock.DistributedLockFactory;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @RequestMapping("/testDistributedLockController")
-@Api(tags = "可重入分布式锁")
+@Tag(name = "可重入分布式锁")
 @RestController
 public class TestDistributedLockController {
 
@@ -49,7 +49,7 @@ public class TestDistributedLockController {
     }
 
     @GetMapping("/test")
-    @ApiOperation("测试（不重入）")
+    @Operation(summary = "测试（不重入）")
     public CommonRsp test(@RequestParam String lockName) {
         DistributedLock redisLock = factory.getRedisLock(lockName);
         redisLock.lock();
@@ -66,7 +66,7 @@ public class TestDistributedLockController {
     }
 
     @GetMapping("/testReentrant")
-    @ApiOperation("测试（重入）")
+    @Operation(summary = "测试（重入）")
     public CommonRsp testReentrant(@RequestParam String lockName) {
         DistributedLock redisLock = factory.getRedisLock(lockName);
         redisLock.lock();

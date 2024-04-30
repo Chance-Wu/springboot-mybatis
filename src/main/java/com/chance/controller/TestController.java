@@ -5,20 +5,21 @@ import com.chance.common.CommonRsp;
 import com.chance.common.annotation.ApiIdempotent;
 import com.chance.component.EventContextAdaptor;
 import com.chance.component.i18n.I18nUtil;
-import com.chance.entity.User;
-import com.chance.entity.dto.UserDto;
 import com.chance.service.ApiIdempotentTokenService;
 import com.chance.service.IUserService;
 import com.chance.service.UnifiedService;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -29,7 +30,7 @@ import java.util.*;
  * @since 2020-08-22
  */
 @Slf4j
-@Api("TestController")
+@Tag(name = "TestController")
 @RestController
 @RequestMapping
 public class TestController {

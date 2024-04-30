@@ -9,8 +9,8 @@ import com.chance.entity.vo.DemoUser;
 import com.chance.service.IUserService;
 import com.chance.util.BeanUtils;
 import com.chance.util.JacksonBundle;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +29,7 @@ import java.util.List;
  * @since 2020-08-22
  */
 @Slf4j
-@Api("UserController")
+@Tag(name = "UserController")
 @RestController
 @RequestMapping("/auth/user")
 public class UserController {
@@ -53,7 +53,7 @@ public class UserController {
         return null;
     }
 
-    @ApiOperation(value = "select", notes = "查询")
+    @Operation(summary = "select", description = "查询")
     @RequestMapping("/addUser1")
     public String addUser1(String username, String password) {
         log.info("username is:{}", username);
