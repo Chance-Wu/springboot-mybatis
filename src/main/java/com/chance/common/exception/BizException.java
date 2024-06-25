@@ -24,7 +24,4 @@ public class BizException extends RuntimeException {
         return code;
     }
 
-    public void setCode(Long code) {
-        this.code = code;
-    }
 }
