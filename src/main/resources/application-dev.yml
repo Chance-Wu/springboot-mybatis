@@ -8,7 +8,7 @@ spring:
     #主数据源
     mysql:
       db1:
-        url: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Shanghai&autoReconnect=true&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false
+        url: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Shanghai&autoReconnect=true&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false&usePublicRetrieve=false
         username: root
         password: Wcy539976
         driver-class-name: com.mysql.cj.jdbc.Driver
@@ -127,3 +127,21 @@ skywalking:
 okhttp:
   connectionTimeout: 3000
   readTimeout: 3000
+
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.chance.controller
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
