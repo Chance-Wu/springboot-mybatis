@@ -3,11 +3,12 @@ package com.chance.controller;
 
 import com.chance.common.CommonRsp;
 import com.chance.common.annotation.ApiIdempotent;
+import com.chance.common.converter.UserConverter;
 import com.chance.component.EventContextAdaptor;
 import com.chance.component.i18n.I18nUtil;
-import com.chance.service.ApiIdempotentTokenService;
+import com.chance.entity.User;
+import com.chance.entity.dto.UserDto;
 import com.chance.service.IUserService;
-import com.chance.service.UnifiedService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,8 @@ public class TestController {
 
     private final ThreadLocal<Integer> currentUser = ThreadLocal.withInitial(() -> null);
 
-    @Autowired
-    private ApiIdempotentTokenService apiIdempotentTokenService;
+/*    @Autowired
+    private ApiIdempotentTokenService apiIdempotentTokenService;*/
 
     @Autowired
     private I18nUtil i18nUtil;
@@ -48,6 +49,8 @@ public class TestController {
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private UserConverter userConverter;
 
     @GetMapping("/hello")
     public String hello() {
@@ -57,10 +60,10 @@ public class TestController {
     /**
      * 获取token
      */
-    @RequestMapping("/getToken")
+    /*@RequestMapping("/getToken")
     public CommonRsp<String> getToken() {
         return apiIdempotentTokenService.createToken();
-    }
+    }*/
 
     /**
      * 测试接口幂等性, 在需要幂等性校验的方法上声明此注解即可
@@ -107,11 +110,10 @@ public class TestController {
 
     @GetMapping("/unified")
     public void event() {
-        UnifiedService memberService = eventContextAdaptor.getEventServiceByType("memberEvent");
-        String res1 = memberService.executeEvent();
-        log.info(res1);
-        UnifiedService couponService = eventContextAdaptor.getEventServiceByType("couponEvent");
-        String res2 = couponService.executeEvent();
-        log.info(res2);
+        User user = new User();
+        user.setUsername("chance");
+        user.setNickName("wcy");
+        UserDto userDto = userConverter.sourceToTarget(user);
+        log.info(">>>>>>>>{}", userDto.toString());
     }
 }

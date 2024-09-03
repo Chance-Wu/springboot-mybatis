@@ -1,6 +1,5 @@
 package com.chance.config;
 
-import com.chance.interceptor.ApiIdempotentInterceptor;
 import com.chance.interceptor.AuthenticationInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -33,7 +32,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(authenticationInterceptor())
                 .addPathPatterns("/auth/**")
                 .excludePathPatterns(getExclude());
-        registry.addInterceptor(apiIdempotentInterceptor());
+//        registry.addInterceptor(apiIdempotentInterceptor());
     }
 
     public String[] getExclude() {
@@ -63,8 +62,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
         return new AuthenticationInterceptor();
     }
 
-    @Bean
+   /* @Bean
     public ApiIdempotentInterceptor apiIdempotentInterceptor() {
         return new ApiIdempotentInterceptor();
-    }
+    }*/
 }

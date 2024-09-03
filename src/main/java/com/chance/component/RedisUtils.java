@@ -1,3 +1,4 @@
+/*
 package com.chance.component;
 
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import javax.annotation.Resource;
 import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 
+*/
 /**
  * <p>
  * redis工具类
@@ -17,7 +19,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author chance
  * @since 2020-09-05
- */
+ *//*
+
 @Component
 public class RedisUtils {
 
@@ -26,37 +29,43 @@ public class RedisUtils {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    /**
+    */
+/**
      * 将value对象写入缓存
      *
      * @param key
      * @param value
-     */
+     *//*
+
     public void set(String key, Object value) {
         if (null != key) {
             redisTemplate.opsForValue().set(key, value);
         }
     }
 
-    /**
+    */
+/**
      * 指定缓存的失效时间
      *
      * @param key
      * @param exp
-     */
+     *//*
+
     public void expire(String key, long exp) {
         if (exp > 0) {
             redisTemplate.expire(key, exp, TimeUnit.SECONDS);
         }
     }
 
-    /**
+    */
+/**
      * 将value对象写入缓存，并指定过期时间
      *
      * @param key
      * @param value
      * @param exp
-     */
+     *//*
+
     public void set(String key, Object value, long exp) {
         if (null != key) {
             set(key, value);
@@ -64,12 +73,14 @@ public class RedisUtils {
         }
     }
 
-    /**
+    */
+/**
      * 删除key
      *
      * @param key
      * @return
-     */
+     *//*
+
     public Boolean del(String key) {
         if (Boolean.TRUE.equals(exists(key))) {
             return redisTemplate.delete(key);
@@ -80,15 +91,18 @@ public class RedisUtils {
 
     }
 
-    /**
+    */
+/**
      * 判断key是否存在
      *
      * @param key
      * @return
-     */
+     *//*
+
     public Boolean exists(String key) {
         Boolean exists = redisTemplate.hasKey(key);
         logger.info("exists key:{} hasKey:{}", key, exists);
         return exists;
     }
 }
+*/

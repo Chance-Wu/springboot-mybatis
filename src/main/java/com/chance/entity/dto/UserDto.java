@@ -25,7 +25,7 @@ public class UserDto {
     @CustomSerializer(value = UserNameRule.class)
     private String username;
     private String password;
-    private SexEnum userSex = SexEnum.DEFAULT;
+    private String userSex = SexEnum.DEFAULT.getCode();
     private String nickName;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;

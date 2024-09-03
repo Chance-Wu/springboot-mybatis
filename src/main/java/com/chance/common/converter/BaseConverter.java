@@ -3,7 +3,7 @@ package com.chance.common.converter;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.MapperConfig;
-import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -20,7 +20,8 @@ public interface BaseConverter<S, T> {
     /**
      * 映射同名属性
      */
-    @Mapping(target = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
+//    @Mapping(target = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mappings({})
     T sourceToTarget(S source);
 
     /**
