@@ -1,10 +1,13 @@
-package com.chance.controller;
+package com.chance.controller.file;
 
 import com.chance.common.CommonRsp;
 import com.chance.entity.dto.PicUploadResult;
 import com.chance.service.FileUploadService;
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -28,6 +31,7 @@ import java.util.Map;
  * @since 1.0
  */
 @Tag(name = "文件上传")
+@ApiSupport(author = "chance")
 @Slf4j
 @RestController
 @RequestMapping("/file")
@@ -40,12 +44,9 @@ public class FileUploadController {
     private FileUploadService fileUploadService;
 
     @PostMapping("/uploadImg")
-    @Operation(
-            summary = "上传图片",
-            parameters = {
-                    @Parameter(name = "file", required = true, description = "要上传的图片文件"),
-                    @Parameter(name = "request", required = true, description = "请求体参数")})
-    public CommonRsp uploadImg(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+    @Operation(summary = "上传图片")
+    @Parameters(value = {@Parameter(name = "file", description = "待上传的图片文件", in = ParameterIn.QUERY)})
+    public CommonRsp<Map<String, String>> uploadImg(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         boolean isFlag = false;
         for (String type : IMAGE_TYPE) {
             log.info(file.getOriginalFilename());
@@ -73,7 +74,9 @@ public class FileUploadController {
     }
 
     @PostMapping("/uploadManyImg")
-    public CommonRsp uploadManyImg(@RequestParam("files") MultipartFile[] files, HttpServletRequest request) {
+    @Operation(summary = "批量上传图片")
+    @Parameters(value = {@Parameter(name = "files", description = "待上传的图片文件", in = ParameterIn.QUERY)})
+    public CommonRsp<Map<String, List<String>>> uploadManyImg(@RequestParam("files") MultipartFile[] files, HttpServletRequest request) {
         boolean isFlag = false;
         for (MultipartFile uploadFile : files) {
             for (String type : IMAGE_TYPE) {

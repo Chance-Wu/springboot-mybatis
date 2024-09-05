@@ -29,11 +29,10 @@ public class CommonRsp<T> {
         return rsp;
     }
 
-    public static CommonRsp<String> error(String errorMsg) {
-        CommonRsp<String> rsp = new CommonRsp<>();
+    public static <T> CommonRsp<T> error(String errorMsg) {
+        CommonRsp<T> rsp = new CommonRsp<>();
         rsp.setCode(ResultCode.FAIL.getCode());
-        rsp.setMessage(ResultCode.FAIL.getMessage());
-        rsp.setBody(errorMsg);
+        rsp.setMessage(errorMsg);
         return rsp;
     }
 

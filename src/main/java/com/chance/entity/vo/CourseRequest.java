@@ -1,12 +1,17 @@
 package com.chance.entity.vo;
 
 import com.chance.common.validator.IdentityCardNumber;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,13 +24,16 @@ import java.util.Date;
  * @since 2020-09-03
  */
 @Data
+@Schema(name = "课程信息")
 //@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class CourseRequest implements Serializable {
 
     private static final long serialVersionUID = -6974651285970774558L;
 
+    @Schema(description = "课程编号", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "编号不能为空")
     private String cNo;
+    @Schema(description = "课程名称", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "名称不能为空")
     private String cName;
 
