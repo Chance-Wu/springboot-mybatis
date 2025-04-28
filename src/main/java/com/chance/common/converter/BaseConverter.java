@@ -20,7 +20,7 @@ public interface BaseConverter<S, T> {
     /**
      * 映射同名属性
      */
-//    @Mapping(target = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
+//    @Mapping(ta rget = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Mappings({})
     T sourceToTarget(S source);
 

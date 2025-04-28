@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace=".mapper.MenuMapper">
+
+    <resultMap id="BaseResultMap" type=".domain.Menu">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="OTHER"/>
+        <result property="sponsor" column="sponsor" jdbcType="OTHER"/>
+        <result property="event" column="event" jdbcType="OTHER"/>
+        <result property="venue" column="venue" jdbcType="OTHER"/>
+        <result property="place" column="place" jdbcType="OTHER"/>
+        <result property="physicalDescription" column="physical_description" jdbcType="OTHER"/>
+        <result property="occasion" column="occasion" jdbcType="OTHER"/>
+        <result property="notes" column="notes" jdbcType="OTHER"/>
+        <result property="callNumber" column="call_number" jdbcType="OTHER"/>
+        <result property="keywords" column="keywords" jdbcType="OTHER"/>
+        <result property="language" column="language" jdbcType="OTHER"/>
+        <result property="date" column="date" jdbcType="OTHER"/>
+        <result property="location" column="location" jdbcType="OTHER"/>
+        <result property="locationType" column="location_type" jdbcType="OTHER"/>
+        <result property="currency" column="currency" jdbcType="OTHER"/>
+        <result property="currencySymbol" column="currency_symbol" jdbcType="OTHER"/>
+        <result property="status" column="status" jdbcType="OTHER"/>
+        <result property="pageCount" column="page_count" jdbcType="INTEGER"/>
+        <result property="dishCount" column="dish_count" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,name,sponsor,
+        event,venue,place,
+        physical_description,occasion,notes,
+        call_number,keywords,language,
+        date,location,location_type,
+        currency,currency_symbol,status,
+        page_count,dish_count
+    </sql>
+</mapper>

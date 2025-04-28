@@ -7,7 +7,7 @@ spring:
     #主数据源
     mysql:
       db1:
-        url: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Shanghai&autoReconnect=true&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false&usePublicRetrieve=false
+        url: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Shanghai&autoReconnect=true&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=true&usePublicRetrieve=true
         username: root
         password: Wcy539976
         driver-class-name: com.mysql.cj.jdbc.Driver
@@ -194,3 +194,39 @@ knife4j:
       name: 接口签名
       # 某一个文件夹下单个.md文件
       locations: classpath:markdown/mybatis/*
+
+#rocketmq:
+#  name-server: 127.0.0.1:9876
+#  consumer:
+#    group: GROUP_CHANCE
+#    # 一次拉取消息最大值，注意是拉取消息的最大值而非消费最大值
+#    pull-batch-size: 10
+#  producer:
+#    group: GROUP_CHANCE
+#    # 发送消息超时时间，默认3000
+#    sendMessageTimeout: 10000
+#    # 发送消息失败重试次数，默认2
+#    retryTimesWhenSendFailed: 2
+#    # 异步消息重试此处，默认2
+#    retryTimesWhenSendAsyncFailed: 2
+#    # 消息最大长度，默认1024 * 1024 * 4(默认4M)
+#    maxMessageSize: 4096
+#    # 压缩消息阈值，默认4k(1024 * 4)
+#    compressMessageBodyThreshold: 4096
+#    # 是否在内部发送失败时重试另一个broker，默认false
+#    retryNextServer: false
+
+email:
+  accounts:
+    - name: wuchenyang
+      host: mail.heilangroup.cn
+      port: 143
+      username: wuchenyang@heilangroup.cn
+      password: Ww539976
+      protocol: imap
+#    - name: chance
+#      host: imap.163.com
+#      port: 993
+#      username: clayyoung6@163.com
+#      password: MERLMhfxWGNXzLGm
+#      protocol: imaps

@@ -3,6 +3,8 @@ package com.chance.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 /**
  * <p>
  *
@@ -13,7 +15,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class User {
+public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,4 +38,12 @@ public class User {
     private String userSex;
 
     private String nickName;
+
+    public User() {
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }

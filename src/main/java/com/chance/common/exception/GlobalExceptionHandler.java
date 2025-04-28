@@ -4,6 +4,8 @@ import com.chance.common.CommonRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,6 +13,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -36,15 +39,6 @@ public class GlobalExceptionHandler {
     public CommonRsp handleRRException(BizException e) {
         log.error(e.getMessage(), e);
         return new CommonRsp(e.getCode(), e.getMessage());
-    }
-
-    /**
-     * 方法参数校验
-     */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonRsp handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        log.error(e.getMessage(), e);
-        return new CommonRsp(PARAM_FAIL_CODE, e.getBindingResult().getFieldError().getDefaultMessage());
     }
 
     /**
@@ -80,6 +74,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public CommonRsp handleException(Exception e) {
+        // 注解验证抛出的异常
+        if (e instanceof MethodArgumentNotValidException) {
+            // 获取错误信息
+            MethodArgumentNotValidException argumentNotValidException = (MethodArgumentNotValidException) e;
+            BindingResult bindingResult = argumentNotValidException.getBindingResult();
+            // 是否存在校验错误
+            String errorMsg = null;
+            if (bindingResult.hasErrors()) {
+                // 获取校验不通过字段的提示信息
+                errorMsg = bindingResult.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .collect(Collectors.joining(", "));
+            }
+            return new CommonRsp(500, errorMsg);
+        }
         log.error(e.getMessage(), e);
         return new CommonRsp(500, "系统繁忙,请稍后再试");
     }

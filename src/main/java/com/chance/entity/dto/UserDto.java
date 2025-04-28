@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -25,10 +26,10 @@ public class UserDto {
      * 脱敏
      */
     @CustomSerializer(value = UserNameRule.class)
-    @Schema(description = "用户名", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "用户名")
     private String username;
 
-    @Schema(description = "密码", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "密码")
     private String password;
 
     @Schema(description = "性别")
@@ -39,5 +40,6 @@ public class UserDto {
 
     @Schema(description = "生日")
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "生日不能为空")
     private Date birthDate;
 }

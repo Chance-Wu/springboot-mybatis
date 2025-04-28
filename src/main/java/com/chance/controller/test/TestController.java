@@ -8,6 +8,7 @@ import com.chance.component.EventContextAdaptor;
 import com.chance.component.i18n.I18nUtil;
 import com.chance.entity.User;
 import com.chance.entity.dto.UserDto;
+import com.chance.service.EmailMonitorService;
 import com.chance.service.IUserService;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
@@ -15,13 +16,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,6 +64,11 @@ public class TestController {
     private IUserService userService;
     @Autowired
     private UserConverter userConverter;
+    @Autowired
+    private EmailMonitorService emailMonitorService;
+
+//    @Autowired
+//    private RocketMQProducerService rocketMQProducerService;
 
     @ApiOperationSupport(order = 1)
     @Operation(summary = "测试国际化")
@@ -121,7 +128,7 @@ public class TestController {
 
     @Operation(summary = "测试Converter", description = "测试Converter")
     @PostMapping("/converter")
-    public void converter(@RequestBody UserDto userDto) {
+    public void converter(@Valid @RequestBody UserDto userDto) {
         User user = userConverter.targetToSource(userDto);
         log.info(">>>>>>>>{}", user.toString());
     }
@@ -136,5 +143,19 @@ public class TestController {
     public CommonRsp<UserDto> bodyParamHeaderPath(@PathVariable("id") String id, @RequestHeader("token") String token, @RequestParam("name") String name, @RequestBody UserDto userDto) {
         userDto.setUsername(userDto.getUsername() + ",receiveName:" + name + ",token:" + token + ",pathID:" + id);
         return CommonRsp.success(userDto);
+    }
+
+//    @Operation(summary = "测试rocketmq消息发送", description = "测试rocketmq消息发送")
+//    @PostMapping("/sendMQMsg")
+//    public void sendMQMsg(@RequestBody UserDto userDto) {
+//        User user = userConverter.targetToSource(userDto);
+//        SendResult sendResult = rocketMQProducerService.sendMsg(JSON.toJSONString(user));
+//        log.info(">>>>>>>>{}", JSON.toJSONString(sendResult));
+//    }
+
+    @Operation(summary = "测试mail")
+    @GetMapping("/email")
+    public void email(HttpServletRequest request) {
+        emailMonitorService.checkEmailsForAllAccounts();
     }
 }
