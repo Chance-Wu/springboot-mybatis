@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 @Service(UnifiedService.COUPON_SERVICE)
 public class CouponEventServiceImpl implements UnifiedService {
 
-
     @Override
     public String executeEvent() {
         return "couponEvent";
