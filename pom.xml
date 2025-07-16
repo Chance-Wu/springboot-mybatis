@@ -32,6 +32,10 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
         <!-- Maven -->
         <dependency>
             <groupId>org.apache.curator</groupId>
@@ -126,11 +130,11 @@
         </dependency>
 
         <!-- Redisson -->
-        <!--<dependency>
+        <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
             <version>${redisson-spring-boot-starter.version}</version>
-        </dependency>-->
+        </dependency>
 
         <!--打印skywalking的TraceId到日志-->
         <!--<dependency>
