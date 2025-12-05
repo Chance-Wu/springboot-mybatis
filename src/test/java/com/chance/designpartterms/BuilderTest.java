@@ -1,7 +1,11 @@
 package com.chance.designpartterms;
 
-import com.chance.designpatterns.builder.Computer;
+import com.chance.designpatterns.builder.ReportConfig;
+import com.chance.designpatterns.builder.ReportConfig2;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * @author chance
@@ -12,12 +16,19 @@ public class BuilderTest {
 
     @Test
     public void test() {
-        Computer computer = new Computer.Builder()
-                .cpu("Intel i7")
-                .memory("16GB")
-                .hardDisk("1TB SSD")
-                .display("27 inch")
+        ReportConfig reportConfig = new ReportConfig.Builder()
+                .title("report2025")
+                .startDate(new Date())
+                .outputFormat("list")
+                .recipients(Arrays.asList("1000$", "2000$", "3000$"))
                 .build();
-        System.out.println(computer);
+        System.out.println(reportConfig);
+
+        ReportConfig2 reportConfig2 = ReportConfig2.builder().title("report2025")
+                .startDate(new Date())
+                .outputFormat("list")
+                .recipients(Arrays.asList("1000$", "2000$", "3000$"))
+                .build();
+        System.out.println(reportConfig2);
     }
 }

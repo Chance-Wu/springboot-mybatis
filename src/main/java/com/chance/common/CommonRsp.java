@@ -10,7 +10,7 @@ package com.chance.common;
  */
 public class CommonRsp<T> {
 
-    private long code;
+    private String code;
     private String message;
     private T body;
 
@@ -39,22 +39,22 @@ public class CommonRsp<T> {
     public CommonRsp() {
     }
 
-    public CommonRsp(long code, String message) {
+    public CommonRsp(String code, String message) {
         this.code = code;
         this.message = message;
     }
 
-    public CommonRsp(long code, String message, T body) {
+    public CommonRsp(String code, String message, T body) {
         this.code = code;
         this.message = message;
         this.body = body;
     }
 
-    public long getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(long code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

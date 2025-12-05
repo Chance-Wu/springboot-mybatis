@@ -28,9 +28,9 @@ import java.util.stream.Collectors;
 @Primary
 public class GlobalExceptionHandler {
 
-    private static int DUPLICATE_KEY_CODE = 1001;
-    private static int PARAM_FAIL_CODE = 1002;
-    private static int VALIDATION_CODE = 1003;
+    private static String DUPLICATE_KEY_CODE = "1001";
+    private static String PARAM_FAIL_CODE = "1002";
+    private static String VALIDATION_CODE = "1003";
 
     /**
      * 处理自定义异常
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     public CommonRsp handlerNoFoundException(Exception e) {
         log.error(e.getMessage(), e);
-        return new CommonRsp(404, "路径不存在，请检查路径是否正确");
+        return new CommonRsp("404", "路径不存在，请检查路径是否正确");
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
@@ -88,9 +88,9 @@ public class GlobalExceptionHandler {
                         .map(FieldError::getDefaultMessage)
                         .collect(Collectors.joining(", "));
             }
-            return new CommonRsp(500, errorMsg);
+            return new CommonRsp("500", errorMsg);
         }
         log.error(e.getMessage(), e);
-        return new CommonRsp(500, "系统繁忙,请稍后再试");
+        return new CommonRsp("500", "系统繁忙,请稍后再试");
     }
 }
