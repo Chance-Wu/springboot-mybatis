@@ -42,4 +42,6 @@ public class UserDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "生日不能为空")
     private Date birthDate;
+
+    private Integer age;
 }

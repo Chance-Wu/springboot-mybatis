@@ -4,6 +4,7 @@ import com.chance.entity.User;
 import com.chance.entity.dto.UserDto;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public interface UserMapper {
 
-    List<UserDto> queryAllUsers();
+    Optional<List<UserDto>> queryAllUsers();
 
     void insertUser(User user);
 }

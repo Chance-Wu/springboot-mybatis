@@ -6,7 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -28,16 +27,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class SpringbootMybatisApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(SpringbootMybatisApplication.class, args);
-
-        String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
-
-        /*CustomResourceLoader customResourceLoader = (CustomResourceLoader) applicationContext.getBean("customResourceLoader");
-        try {
-            customResourceLoader.showResourceData("https://www.clc.plus/fqa/100067.html");
-        } catch (IOException e) {
-            System.out.println(e);
-        }*/
+        SpringApplication.run(SpringbootMybatisApplication.class, args);
     }
-
 }

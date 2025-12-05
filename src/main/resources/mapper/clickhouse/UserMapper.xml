@@ -5,7 +5,8 @@
         insert into user(user_name,password,user_sex,nick_name,birth_date) values(#{username},#{password},#{userSex},#{nickName},#{birthDate})
     </insert>
 
-    <select id="queryAllUsers" resultType="com.chance.entity.dto.UserDto">
+    <select id="queryAllUsers" resultType="java.util.List">
         select * from user
     </select>
+
 </mapper>

@@ -1,5 +1,9 @@
 package com.chance.util.findcommon;
 
+import com.chance.entity.User;
+import org.openjdk.jol.info.ClassLayout;
+import org.openjdk.jol.vm.VM;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
@@ -66,5 +70,24 @@ public class Utils {
                 Files.createDirectories(path);
             }
         }
+    }
+
+    public static void main(String[] args) {
+        // 打印虚拟机版本信息
+        System.out.println(VM.current().details());
+        // 创建一个空的对象
+        User u = new User();
+        u.setUsername("chance");
+        // 获取并打印该对象的类布局信息
+        System.out.println(ClassLayout.parseInstance(u).toPrintable());
+    }
+
+    public static boolean isAllUpperCase(String str) {
+        // 检查字符串是否为null或者空串，或者是仅包含非字母字符的情况
+        if (str == null || str.isEmpty() || !str.matches("^[^A-Za-z]*$")) {
+            return false;
+        }
+        // 将字符串转换成大写，并与原字符串比较
+        return str.equals(str.toUpperCase());
     }
 }
