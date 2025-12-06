@@ -1,6 +1,6 @@
 package com.chance.common.handler;
 
-import com.chance.common.ResultCode;
+import com.chance.common.ErrorCodeEnum;
 import com.chance.common.context.TransHandlerContext;
 import com.chance.common.exception.BizException;
 import org.slf4j.Logger;
@@ -96,7 +96,7 @@ public class DefaultTransPipeline implements TransPipeline {
             head.getNext().execute(getContext());
         } catch (Exception e) {
             LOGGER.error(">>>>>>>> pipeline系统运行异常 <<<<<<<<", e);
-            throw new BizException(ResultCode.FAIL.getCode(), ResultCode.FAIL.getMessage().concat(":pipeline运行异常"));
+            throw new BizException(ErrorCodeEnum.FAIL, ErrorCodeEnum.FAIL.getMessage().concat(":pipeline运行异常"));
         }
     }
 

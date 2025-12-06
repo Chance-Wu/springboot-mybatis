@@ -1,7 +1,7 @@
 //package com.chance.service.impl;
 //
 //import com.chance.common.CommonRsp;
-//import com.chance.common.ResultCode;
+//import com.chance.common.ErrorCodeEnum;
 //import com.chance.common.exception.BizException;
 //import com.chance.component.RedisUtils;
 //import com.chance.service.ApiIdempotentTokenService;
@@ -32,8 +32,8 @@
 //        StringBuilder token = new StringBuilder();
 //        token.append("API_IDEMPOTENT_TOKEN:").append(uuid);
 //        redisUtils.set(token.toString(), token.toString(), 5 * 60L);
-//        rsp.setCode(ResultCode.SUCCESS.getCode());
-//        rsp.setMessage(ResultCode.SUCCESS.getMessage());
+//        rsp.setCode(ErrorCodeEnum.SUCCESS.getCode());
+//        rsp.setMessage(ErrorCodeEnum.SUCCESS.getMessage());
 //        rsp.setBody(token.toString());
 //        return rsp;
 //    }
@@ -47,17 +47,17 @@
 //            token = request.getParameter("apiIdempotentToken");
 //            // parameter中也不存在token
 //            if (StringUtils.isBlank(token)) {
-//                throw new BizException(ResultCode.ILLEGAL_ARGUMENT.getCode(), ResultCode.ILLEGAL_ARGUMENT.getMessage());
+//                throw new BizException(ErrorCodeEnum.ILLEGAL_ARGUMENT.getCode(), ErrorCodeEnum.ILLEGAL_ARGUMENT.getMessage());
 //            }
 //        }
 //
 //        if (Boolean.FALSE.equals(redisUtils.exists(token))) {
-//            throw new BizException(ResultCode.REPETITIVE_OPERATION.getCode(), ResultCode.REPETITIVE_OPERATION.getMessage());
+//            throw new BizException(ErrorCodeEnum.REPETITIVE_OPERATION.getCode(), ErrorCodeEnum.REPETITIVE_OPERATION.getMessage());
 //        }
 //
 //        Boolean del = redisUtils.del(token);
 //        if (Boolean.FALSE.equals(del)) {
-//            throw new BizException(ResultCode.REPETITIVE_OPERATION.getCode(), ResultCode.REPETITIVE_OPERATION.getMessage());
+//            throw new BizException(ErrorCodeEnum.REPETITIVE_OPERATION.getCode(), ErrorCodeEnum.REPETITIVE_OPERATION.getMessage());
 //        }
 //    }
 //}

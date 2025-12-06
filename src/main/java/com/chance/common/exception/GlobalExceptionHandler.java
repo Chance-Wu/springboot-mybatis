@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @since 2020-09-03
  */
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice // 统一处理所有 @Controller 和 @RestController 抛出的异常
 @Primary
 public class GlobalExceptionHandler {
 

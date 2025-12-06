@@ -1,5 +1,6 @@
 package com.chance.service.impl;
 
+import com.chance.common.ErrorCodeEnum;
 import com.chance.common.exception.BizException;
 import com.chance.entity.User;
 import com.chance.entity.dto.UserDto;
@@ -9,9 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,17 +30,8 @@ public class UserServiceImpl implements IUserService {
     @Override
     public List<UserDto> queryAllUsers() {
         log.info(">>>>>>>> queryAllUsers service");
-        List<UserDto> userDtos = userMapper.queryAllUsers()
-                .orElseThrow(() -> new BizException("10001", "查询用户列表失败"));
-        List<UserDto> userDtoList = new ArrayList<>();
-        for (UserDto userDto : userDtos) {
-            if (userDto.getAge() > 10) {
-                userDtoList.add(userDto);
-            }
-        }
-
-        List<Integer> collect = userDtos.stream().map(UserDto::getAge).collect(Collectors.toList());
-        return userDtos;
+        return userMapper.queryAllUsers()
+                .orElseThrow(() -> new BizException(ErrorCodeEnum.NO_DATA));
     }
 
     @Override

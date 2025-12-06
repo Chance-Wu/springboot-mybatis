@@ -16,22 +16,22 @@ public class CommonRsp<T> {
 
     public static CommonRsp<Object> success() {
         CommonRsp<Object> rsp = new CommonRsp<>();
-        rsp.setCode(ResultCode.SUCCESS.getCode());
-        rsp.setMessage(ResultCode.SUCCESS.getMessage());
+        rsp.setCode(ErrorCodeEnum.SUCCESS.getCode());
+        rsp.setMessage(ErrorCodeEnum.SUCCESS.getMessage());
         return rsp;
     }
 
     public static <T> CommonRsp<T> success(T body) {
         CommonRsp<T> rsp = new CommonRsp<>();
-        rsp.setCode(ResultCode.SUCCESS.getCode());
-        rsp.setMessage(ResultCode.SUCCESS.getMessage());
+        rsp.setCode(ErrorCodeEnum.SUCCESS.getCode());
+        rsp.setMessage(ErrorCodeEnum.SUCCESS.getMessage());
         rsp.setBody(body);
         return rsp;
     }
 
     public static <T> CommonRsp<T> error(String errorMsg) {
         CommonRsp<T> rsp = new CommonRsp<>();
-        rsp.setCode(ResultCode.FAIL.getCode());
+        rsp.setCode(ErrorCodeEnum.FAIL.getCode());
         rsp.setMessage(errorMsg);
         return rsp;
     }

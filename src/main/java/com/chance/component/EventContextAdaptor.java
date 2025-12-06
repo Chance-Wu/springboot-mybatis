@@ -1,6 +1,6 @@
 package com.chance.component;
 
-import com.chance.common.ResultCode;
+import com.chance.common.ErrorCodeEnum;
 import com.chance.common.enums.EventTypeEnum;
 import com.chance.common.exception.BizException;
 import com.chance.service.UnifiedService;
@@ -36,11 +36,11 @@ public class EventContextAdaptor {
     public UnifiedService getEventServiceByType(String eventType) {
         String serviceName = EventTypeEnum.getServiceNameByType(eventType);
         if (StringUtils.isEmpty(serviceName)) {
-            throw new BizException(ResultCode.FAIL.getCode(), "eventType:'" + eventType + "' does not exists!");
+            throw new BizException(ErrorCodeEnum.FAIL, "eventType:'" + eventType + "' does not exists!");
         }
         UnifiedService strategy = unifiedServiceMap.get(serviceName);
         if (strategy == null) {
-            throw new BizException(ResultCode.FAIL.getCode(), "No EventService Matched, EventServiceName : " + eventType);
+            throw new BizException(ErrorCodeEnum.FAIL, "No EventService Matched, EventServiceName : " + eventType);
         }
         return strategy;
     }
