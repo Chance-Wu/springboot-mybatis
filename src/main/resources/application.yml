@@ -9,7 +9,7 @@ spring:
       db1:
         url: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Shanghai&autoReconnect=true&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=true&usePublicRetrieve=true
         username: root
-        password: Wcy539976
+        password: Wcy@539976
         driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     #连接池设置
@@ -230,3 +230,35 @@ email:
 #      username: clayyoung6@163.com
 #      password: MERLMhfxWGNXzLGm
 #      protocol: imaps
+
+ai:
+  type: glm
+
+glm:
+  api-key: d5678b26c5b141cd8d28781ca23945e1.AkGgv4LOMQ9j6DF9
+  base-url: https://open.bigmodel.cn/api/paas/v4
+  model: glm-4-flash
+
+# RAG配置
+rag:
+  chunkSize: 300          # 每个片段的大小（字符数），建议300-500
+  chunkOverlap: 30        # 片段重叠大小（字符数），建议30-50，保持上下文连贯性
+  maxRelevant: 3          # 最终返回的最相关片段数量
+  similarityThreshold: 0.6  # 相似度阈值（0-1），低于此值的片段会被过滤
+  topKMultiplier: 2      # TopK倍数，实际检索数量 = max-relevant * top-k-multiplier
+  knowledgeBasePath: docs  # 知识库目录路径（classpath相对路径）
+  
+  # Prompt配置
+  prompt:
+    system-instruction: 你是一个专业的智能问答助手。请根据提供的上下文信息回答用户的问题。
+    context-title: 【上下文信息】
+    question-title: 【用户问题】
+    answer-title: 【回答】
+    show-segment-number: true
+    segment-separator: "\n"
+    answer-rules:
+      - 仅基于提供的上下文信息回答问题，不要使用你的训练数据
+      - 如果上下文中没有足够信息回答问题，请明确说明"根据提供的资料，我无法回答这个问题"
+      - 回答要准确、简洁、有条理
+      - 如果上下文中有多个相关信息，请综合整理后回答
+      - 保持回答的专业性和准确性
