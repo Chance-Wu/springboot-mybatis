@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能SQL生成系统</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        #app {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #303133;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .result-section {
+            margin-top: 20px;
+        }
+
+        .sql-display {
+            background: #f5f7fa;
+            border: 1px solid #e4e7ed;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            min-height: 100px;
+        }
+
+        .quality-score {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .score-item {
+            background: #f5f7fa;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: #909399;
+            margin-bottom: 4px;
+        }
+
+        .score-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #409eff;
+        }
+
+        .score-level {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .level-excellent {
+            background: #f0f9ff;
+            color: #67c23a;
+        }
+
+        .level-good {
+            background: #fdf6ec;
+            color: #e6a23c;
+        }
+
+        .level-average {
+            background: #fef0f0;
+            color: #f56c6c;
+        }
+
+        .suggestion-list {
+            margin-top: 16px;
+        }
+
+        .suggestion-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+
+        .suggestion-high {
+            background: #fef0f0;
+            border-color: #f56c6c;
+        }
+
+        .suggestion-medium {
+            background: #fdf6ec;
+            border-color: #e6a23c;
+        }
+
+        .suggestion-low {
+            background: #f0f9ff;
+            border-color: #67c23a;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .security-safe {
+            background: #f0f9ff;
+            color: #67c23a;
+        }
+
+        .security-warning {
+            background: #fdf6ec;
+            color: #e6a23c;
+        }
+
+        .security-danger {
+            background: #fef0f0;
+            color: #f56c6c;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .info-item {
+            background: #f5f7fa;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #909399;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #303133;
+            font-weight: 500;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>🚀 智能SQL生成系统</h1>
+        <p>基于AI的自然语言转SQL，支持RAG融合、安全控制和质量评估</p>
+    </div>
+
+    <!-- 统计面板 -->
+    <el-card class="card" style="margin-bottom: 20px;">
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.totalRequests }}</div>
+                <div class="stat-label">总请求数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.cacheHitRate }}</div>
+                <div class="stat-label">缓存命中率</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.avgTime }}ms</div>
+                <div class="stat-label">平均响应时间</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.successRate }}</div>
+                <div class="stat-label">成功率</div>
+            </div>
+        </div>
+    </el-card>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 左侧：输入区域 -->
+        <div>
+            <el-card class="card">
+                <div class="card-title">
+                    <span>💬</span>
+                    <span>自然语言查询</span>
+                </div>
+
+                <!-- 模式选择 -->
+                <div class="mode-selector">
+                    <el-radio-group v-model="generateMode" size="large">
+                        <el-radio-button label="optimized">优化模式</el-radio-button>
+                        <el-radio-button label="structured">结构化模式</el-radio-button>
+                        <el-radio-button label="fusion">RAG融合</el-radio-button>
+                    </el-radio-group>
+                </div>
+
+                <!-- 输入框 -->
+                <div class="input-section">
+                    <el-input
+                            v-model="question"
+                            type="textarea"
+                            :rows="4"
+                            placeholder="请输入您的查询需求，例如：查询年龄大于18岁的用户"
+                            @keyup.enter.ctrl="generateSql"
+                    />
+                </div>
+
+                <!-- 操作按钮 -->
+                <el-space wrap>
+                    <el-button type="primary" size="large" @click="generateSql" :loading="loading">
+                        <el-icon>
+                            <VideoPlay/>
+                        </el-icon>
+                        生成SQL
+                    </el-button>
+                    <el-button size="large" @click="clearAll">
+                        <el-icon>
+                            <Delete/>
+                        </el-icon>
+                        清空
+                    </el-button>
+                    <el-button size="large" @click="showExamples">
+                        <el-icon>
+                            <Document/>
+                        </el-icon>
+                        示例
+                    </el-button>
+                </el-space>
+
+                <!-- 快捷示例 -->
+                <div style="margin-top: 20px;">
+                    <div style="font-size: 14px; color: #909399; margin-bottom: 8px;">快捷示例：</div>
+                    <el-space wrap>
+                        <el-tag
+                                v-for="example in examples"
+                                :key="example"
+                                @click="useExample(example)"
+                                style="cursor: pointer;"
+                        >
+                            {{ example }}
+                        </el-tag>
+                    </el-space>
+                </div>
+            </el-card>
+
+            <!-- SQL安全检查工具 -->
+            <el-card class="card" style="margin-top: 20px;">
+                <div class="card-title">
+                    <span>🔒</span>
+                    <span>SQL安全检查</span>
+                </div>
+
+                <el-input
+                        v-model="checkSql"
+                        type="textarea"
+                        :rows="3"
+                        placeholder="输入SQL语句进行安全检查"
+                        style="margin-bottom: 12px;"
+                />
+
+                <el-button type="warning" @click="checkSqlSecurity" :loading="checking">
+                    检查安全性
+                </el-button>
+
+                <div v-if="securityResult" style="margin-top: 16px;">
+                    <el-alert
+                            :title="securityResult.message"
+                            :type="securityResult.safe ? 'success' : 'error'"
+                            :closable="false"
+                            show-icon
+                    />
+                </div>
+            </el-card>
+        </div>
+
+        <!-- 右侧：结果展示 -->
+        <div>
+            <el-card class="card">
+                <div class="card-title">
+                    <span>✨</span>
+                    <span>生成结果</span>
+                    <el-tag v-if="result.fromCache" type="success" effect="dark" size="small"
+                            style="margin-left: auto;">
+                        ⚡ 缓存命中
+                    </el-tag>
+                </div>
+
+                <!-- 加载状态 -->
+                <div v-if="loading" style="text-align: center; padding: 40px;">
+                    <el-icon class="is-loading" :size="40">
+                        <Loading/>
+                    </el-icon>
+                    <p style="margin-top: 16px; color: #909399;">正在生成SQL...</p>
+                </div>
+
+                <!-- 结果展示 -->
+                <div v-else-if="result.sql" class="result-section">
+                    <!-- SQL语句 -->
+                    <div style="margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <div style="font-size: 14px; color: #606266; font-weight: 500;">
+                                生成的SQL：
+                            </div>
+                            <el-button
+                                    type="primary"
+                                    size="small"
+                                    @click="copySql"
+                                    :icon="CopyDocument"
+                            >
+                                复制SQL
+                            </el-button>
+                        </div>
+                        <div class="sql-display markdown-code">
+                            <div class="code-header">SQL</div>
+                            <pre><code>{{ formatSql(result.sql) }}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- 质量评分 -->
+                    <div v-if="result.qualityScore" style="margin-bottom: 16px;">
+                        <div style="font-size: 14px; color: #606266; margin-bottom: 8px; font-weight: 500;">
+                            质量评分：
+                        </div>
+                        <div class="quality-score">
+                            <div class="score-item">
+                                <div class="score-label">格式规范</div>
+                                <div class="score-value">{{ result.qualityScore.formatScore }}/20</div>
+                            </div>
+                            <div class="score-item">
+                                <div class="score-label">最佳实践</div>
+                                <div class="score-value">{{ result.qualityScore.practiceScore }}/30</div>
+                            </div>
+                            <div class="score-item">
+                                <div class="score-label">性能考虑</div>
+                                <div class="score-value">{{ result.qualityScore.performanceScore }}/30</div>
+                            </div>
+                            <div class="score-item">
+                                <div class="score-label">安全性</div>
+                                <div class="score-value">{{ result.qualityScore.securityScore }}/20</div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 12px;">
+                                <span class="score-level" :class="getLevelClass(result.qualityScore.level)">
+                                    {{ result.qualityScore.level }} ({{ result.qualityScore.overallScore }}分)
+                                </span>
+                        </div>
+                    </div>
+
+                    <!-- 安全信息 -->
+                    <div v-if="result.securityInfo" style="margin-bottom: 16px;">
+                        <div style="font-size: 14px; color: #606266; margin-bottom: 8px; font-weight: 500;">
+                            安全检查：
+                        </div>
+                        <el-tag
+                                :class="'security-badge security-' + result.securityInfo.level.toLowerCase()"
+                        >
+                            <el-icon>
+                                <Lock/>
+                            </el-icon>
+                            {{ result.securityInfo.message }}
+                        </el-tag>
+                    </div>
+
+                    <!-- 性能建议 -->
+                    <div v-if="result.performanceSuggestions && result.performanceSuggestions.length > 0"
+                         style="margin-bottom: 16px;">
+                        <div style="font-size: 14px; color: #606266; margin-bottom: 8px; font-weight: 500;">
+                            性能建议：
+                        </div>
+                        <div class="suggestion-list">
+                            <div
+                                    v-for="(suggestion, index) in result.performanceSuggestions"
+                                    :key="index"
+                                    class="suggestion-item"
+                                    :class="'suggestion-' + suggestion.priority.toLowerCase()"
+                            >
+                                <div style="font-weight: 600; margin-bottom: 4px;">
+                                    {{ getPriorityIcon(suggestion.priority) }} {{ suggestion.priority }}
+                                </div>
+                                <div>{{ suggestion.message }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SQL信息 -->
+                    <div v-if="result.sqlType" style="margin-bottom: 16px;">
+                        <div style="font-size: 14px; color: #606266; margin-bottom: 8px; font-weight: 500;">
+                            SQL分析：
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">类型</div>
+                                <div class="info-value">{{ result.sqlType }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">复杂度</div>
+                                <div class="info-value">{{ result.complexityLevel }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">使用的表</div>
+                                <div class="tag-list">
+                                    <el-tag v-for="table in result.usedTables" :key="table" size="small">
+                                        {{ table }}
+                                    </el-tag>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">生成时间</div>
+                                <div class="info-value">{{ result.generationTimeMs }}ms</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 改进建议 -->
+                    <div v-if="result.qualityScore && result.qualityScore.suggestions.length > 0">
+                        <div style="font-size: 14px; color: #606266; margin-bottom: 8px; font-weight: 500;">
+                            改进建议：
+                        </div>
+                        <el-alert
+                                v-for="(suggestion, index) in result.qualityScore.suggestions"
+                                :key="index"
+                                :title="suggestion"
+                                type="info"
+                                :closable="false"
+                                style="margin-bottom: 8px;"
+                        />
+                    </div>
+                </div>
+
+                <!-- 空状态 -->
+                <div v-else style="text-align: center; padding: 60px 20px; color: #909399;">
+                    <el-icon :size="60">
+                        <ChatLineSquare/>
+                    </el-icon>
+                    <p style="margin-top: 16px;">输入查询需求，点击生成SQL</p>
+                </div>
+            </el-card>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/element-plus"></script>
+<script src="https://unpkg.com/@element-plus/icons-vue"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+    const {createApp, ref, reactive, onMounted} = Vue;
+    const {ElMessage, ElMessageBox} = ElementPlus;
+
+    const app = createApp({
+        setup() {
+            // API基础URL
+            const API_BASE = 'http://localhost:8091/smart-sql';
+
+            // 状态
+            const question = ref('');
+            const checkSql = ref('');
+            const generateMode = ref('structured');
+            const loading = ref(false);
+            const checking = ref(false);
+            const result = reactive({});
+            const securityResult = ref(null);
+            const stats = reactive({
+                totalRequests: 0,
+                cacheHitRate: '0%',
+                avgTime: 0,
+                successRate: '100%'
+            });
+
+            // 示例
+            const examples = [
+                '查询所有用户',
+                '查询年龄大于18岁的用户',
+                '统计每个年龄的用户数量',
+                '查询用户名包含admin的用户',
+                '查询每个用户的订单数量'
+            ];
+
+            // 生成SQL
+            const generateSql = async () => {
+                if (!question.value.trim()) {
+                    ElMessage.warning('请输入查询需求');
+                    return;
+                }
+
+                loading.value = true;
+                Object.assign(result, {});
+
+                try {
+                    let response;
+                    const params = new URLSearchParams();
+                    params.append('question', question.value);
+
+                    switch (generateMode.value) {
+                        case 'optimized':
+                            response = await axios.post(`${API_BASE}/generate-optimized`, params);
+                            break;
+                        case 'structured':
+                            response = await axios.post(`${API_BASE}/generate-structured`, params);
+                            break;
+                        case 'fusion':
+                            response = await axios.post(`${API_BASE}/generate-fusion`, params);
+                            break;
+                    }
+
+                    if (response.data) {
+                        Object.assign(result, response.data);
+
+                        if (result.success) {
+                            ElMessage.success('SQL生成成功');
+                        } else {
+                            ElMessage.error(result.error || '生成失败');
+                        }
+                    }
+
+                    // 更新统计
+                    await loadStats();
+                } catch (error) {
+                    console.error('生成失败:', error);
+                    ElMessage.error('生成失败: ' + (error.response?.data?.error || error.message));
+                } finally {
+                    loading.value = false;
+                }
+            };
+
+            // 检查SQL安全性
+            const checkSqlSecurity = async () => {
+                if (!checkSql.value.trim()) {
+                    ElMessage.warning('请输入SQL语句');
+                    return;
+                }
+
+                checking.value = true;
+                securityResult.value = null;
+
+                try {
+                    const params = new URLSearchParams();
+                    params.append('sql', checkSql.value);
+
+                    const response = await axios.post(`${API_BASE}/security/check`, params);
+                    securityResult.value = response.data;
+
+                    if (response.data.safe) {
+                        ElMessage.success('SQL安全检查通过');
+                    } else {
+                        ElMessage.error(response.data.message);
+                    }
+                } catch (error) {
+                    console.error('检查失败:', error);
+                    ElMessage.error('检查失败: ' + error.message);
+                } finally {
+                    checking.value = false;
+                }
+            };
+
+            // 加载统计信息
+            const loadStats = async () => {
+                try {
+                    const response = await axios.get(`${API_BASE}/optimized/stats`);
+                    if (response.data.success) {
+                        stats.totalRequests = response.data.totalRequests || 0;
+                        stats.cacheHitRate = response.data.cacheHitRate || '0%';
+                        stats.avgTime = response.data.avgGenerationTimeMs || 0;
+
+                        const success = response.data.totalSuccess || 0;
+                        const total = response.data.totalRequests || 1;
+                        stats.successRate = Math.round(success / total * 100) + '%';
+                    }
+                } catch (error) {
+                    console.error('加载统计失败:', error);
+                }
+            };
+
+            // 使用示例
+            const useExample = (example) => {
+                question.value = example;
+                generateSql();
+            };
+
+            // 显示示例对话框
+            const showExamples = () => {
+                ElMessageBox.alert(
+                    examples.map(e => `• ${e}`).join('\n'),
+                    '查询示例',
+                    {
+                        confirmButtonText: '确定',
+                        customClass: 'example-dialog'
+                    }
+                );
+            };
+
+            // 清空
+            const clearAll = () => {
+                question.value = '';
+                checkSql.value = '';
+                Object.assign(result, {});
+                securityResult.value = null;
+                ElMessage.info('已清空');
+            };
+
+            // 获取等级样式类
+            const getLevelClass = (level) => {
+                const map = {
+                    '优秀': 'level-excellent',
+                    '良好': 'level-good',
+                    '一般': 'level-average',
+                    '需改进': 'level-average'
+                };
+                return map[level] || 'level-average';
+            };
+
+            // 获取优先级图标
+            const getPriorityIcon = (priority) => {
+                const map = {
+                    'HIGH': '🔴',
+                    'MEDIUM': '🟡',
+                    'LOW': '🟢'
+                };
+                return map[priority] || '⚪';
+            };
+
+            // 格式化SQL（清理Markdown标记）
+            const formatSql = (sql) => {
+                if (!sql) return '';
+
+                // 清理Markdown代码块标记
+                let cleaned = sql.trim()
+                    .replace(/^```sql\s*/, '')
+                    .replace(/^```\s*/, '')
+                    .replace(/\s*```$/, '')
+                    .trim();
+
+                return cleaned;
+            };
+
+            // 复制SQL到剪贴板
+            const copySql = async () => {
+                if (!result.sql) {
+                    ElMessage.warning('没有可复制的SQL');
+                    return;
+                }
+
+                try {
+                    const cleanedSql = formatSql(result.sql);
+                    await navigator.clipboard.writeText(cleanedSql);
+                    ElMessage.success('SQL已复制到剪贴板');
+                } catch (error) {
+                    console.error('复制失败:', error);
+                    ElMessage.error('复制失败，请手动复制');
+                }
+            };
+
+            // 初始化
+            onMounted(() => {
+                loadStats();
+
+                // 定时刷新统计
+                setInterval(loadStats, 10000);
+            });
+
+            return {
+                question,
+                checkSql,
+                generateMode,
+                loading,
+                checking,
+                result,
+                securityResult,
+                stats,
+                examples,
+                generateSql,
+                checkSqlSecurity,
+                useExample,
+                showExamples,
+                clearAll,
+                getLevelClass,
+                getPriorityIcon,
+                formatSql,
+                copySql
+            };
+        }
+    });
+
+    // 注册图标
+    for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+        app.component(key, component);
+    }
+
+    app.use(ElementPlus);
+    app.mount('#app');
+</script>
+</body>
+</html>
