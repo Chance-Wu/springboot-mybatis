@@ -84,6 +84,7 @@ public class OptimizedSmartSqlService {
         long startTime = System.currentTimeMillis();
         totalRequests++;
 
+        log.info("========== 开始SQL生成流程 ==========");
         log.info("收到SQL生成请求 [{}]: {}", totalRequests, question);
 
         SqlGenerationResult result = new SqlGenerationResult();
@@ -91,47 +92,68 @@ public class OptimizedSmartSqlService {
 
         try {
             // 1. 检查缓存
+            log.info("[步骤1] 检查缓存...");
             CachedSql cached = checkCache(question);
             if (cached != null) {
                 totalCacheHits++;
+                result.setSuccess(true);  // ✅ 设置成功标志
                 result.setSql(cached.getSql());
                 result.setFromCache(true);
                 result.setGenerationTimeMs(0L);
 
-                log.info("缓存命中，直接返回SQL");
+                log.info("✅ 缓存命中，直接返回SQL: {}", cached.getSql().substring(0, Math.min(100, cached.getSql().length())));
+                log.info("========== SQL生成完成（缓存） ==========");
                 return result;
             }
+            log.info("❌ 缓存未命中，继续生成SQL");
 
             // 2. 智能注入相关表的Schema信息
+            log.info("[步骤2] 注入Schema信息...");
             String schemaInfo = schemaInjector.injectRelevantSchemas(question);
-            log.debug("Schema信息长度: {} 字符", schemaInfo.length());
+            log.info("Schema信息长度: {} 字符", schemaInfo.length());
+            log.debug("Schema内容预览: {}", schemaInfo.substring(0, Math.min(200, schemaInfo.length())));
 
             // 3. 构建优化的Prompt
+            log.info("[步骤3] 构建Prompt...");
             String systemInstruction = buildSystemInstruction();
             String prompt = buildGeneratePrompt(schemaInfo, question);
+            log.info("Prompt构建完成，总长度: {} 字符", prompt.length());
 
             // 4. 使用AI生成SQL（带重试）
+            log.info("[步骤4] 调用AI生成SQL（最多重试{}次）...", MAX_RETRY_COUNT);
             String sql = generateWithRetry(systemInstruction, prompt, MAX_RETRY_COUNT);
+            log.info("✅ AI生成SQL成功: {}", sql.substring(0, Math.min(150, sql.length())));
 
             // 5. 验证SQL安全性（增强版）
+            log.info("[步骤5] 执行SQL安全检查...");
             SqlSecurityController.SecurityCheckResult securityCheck =
                     securityController.checkSqlSecurity(sql);
 
             if (!securityCheck.isSafe()) {
-                log.warn("SQL安全检查失败: {}", securityCheck.getMessage());
+                log.warn("⚠️ SQL安全检查失败: {}", securityCheck.getMessage());
+                log.info("========== SQL生成失败（安全检查） ==========");
                 result.setSuccess(false);
                 result.setError("SQL安全检查失败: " + securityCheck.getMessage());
                 totalFailures++;
                 return result;
             }
+            log.info("✅ SQL安全检查通过");
 
             // 6. 自动添加LIMIT限制
+            log.info("[步骤6] 添加默认LIMIT限制...");
             String limitedSql = securityController.addDefaultLimit(sql);
+            log.info("添加LIMIT后SQL: {}", limitedSql.substring(0, Math.min(150, limitedSql.length())));
 
             // 7. 质量评估
+            log.info("[步骤7] 评估SQL质量...");
             QualityScore quality = evaluateQuality(limitedSql, schemaInfo, question);
+            log.info("质量评分: {}分 (等级: {})", quality.getOverallScore(), quality.getLevel());
+            log.debug("详细评分 - 格式:{}, 实践:{}, 性能:{}, 安全:{}",
+                    quality.getFormatScore(), quality.getPracticeScore(),
+                    quality.getPerformanceScore(), quality.getSecurityScore());
 
             // 8. 缓存结果
+            log.info("[步骤8] 缓存SQL结果...");
             cacheResult(question, limitedSql);
 
             // 9. 构建成功结果
@@ -147,14 +169,17 @@ public class OptimizedSmartSqlService {
             totalSuccess++;
             totalTimeMs += generationTime;
 
-            log.info("SQL生成成功，耗时: {}ms, 质量评分: {}", generationTime, quality.getOverallScore());
+            log.info("✅ SQL生成成功！耗时: {}ms, 质量评分: {}/100 ({})",
+                    generationTime, quality.getOverallScore(), quality.getLevel());
+            log.info("========== SQL生成流程结束 ==========");
             return result;
 
         } catch (Exception e) {
             long endTime = System.currentTimeMillis();
             long generationTime = endTime - startTime;
 
-            log.error("SQL生成失败，耗时: {}ms", generationTime, e);
+            log.error("❌ SQL生成失败！耗时: {}ms, 错误: {}", generationTime, e.getMessage(), e);
+            log.info("========== SQL生成流程异常结束 ==========");
 
             result.setSuccess(false);
             result.setError("SQL生成失败: " + e.getMessage());
@@ -208,6 +233,8 @@ public class OptimizedSmartSqlService {
 
             // 4. 使用AI生成SQL（带重试）
             String sql = generateWithRetry(systemInstruction, prompt, MAX_RETRY_COUNT);
+
+            log.info("生成SQL: {}", sql);
 
             // 5. 验证SQL安全性（增强版）
             SqlSecurityController.SecurityCheckResult securityCheck =
@@ -269,33 +296,44 @@ public class OptimizedSmartSqlService {
 
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
-                log.debug("第 {} 次尝试生成SQL", attempt);
+                log.info("🔄 第 {}/{} 次尝试生成SQL...", attempt, maxRetries);
                 String sql = sqlAssistant.generateSql(systemInstruction, prompt);
+
+                // 记录AI返回的原始内容（前200字符）
+                String preview = sql != null ? sql.substring(0, Math.min(200, sql.length())) : "null";
+                log.debug("AI返回原始内容: {}", preview);
 
                 // 验证生成的SQL是否有效
                 if (isValidSql(sql)) {
+                    log.info("✅ 第 {} 次生成成功，SQL有效", attempt);
                     return sql;
                 }
 
-                log.warn("第 {} 次生成的SQL无效，准备重试", attempt);
+                log.warn("⚠️ 第 {} 次生成的SQL无效，准备重试。SQL预览: {}", attempt, preview);
 
             } catch (Exception e) {
                 lastException = e;
-                log.warn("第 {} 次生成失败: {}", attempt, e.getMessage());
+                log.error("❌ 第 {} 次生成失败: {}", attempt, e.getMessage());
+                log.debug("异常详情:", e);
             }
 
             // 重试前等待（指数退避）
             if (attempt < maxRetries) {
                 try {
-                    Thread.sleep(1000 * attempt);  // 1s, 2s, 4s...
+                    long waitTime = 1000 * attempt;  // 1s, 2s, 4s...
+                    log.info("⏳ 等待 {}ms 后进行第 {} 次重试...", waitTime, attempt + 1);
+                    Thread.sleep(waitTime);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
+                    log.error("重试被中断");
                     throw new RuntimeException("重试被中断", ie);
                 }
             }
         }
 
-        throw new RuntimeException("经过" + maxRetries + "次重试后仍然失败", lastException);
+        log.error("❌ 经过{}次重试后仍然失败", maxRetries);
+        throw new RuntimeException("经过" + maxRetries + "次重试后仍然失败: " +
+                (lastException != null ? lastException.getMessage() : "未知错误"), lastException);
     }
 
     /**
@@ -342,16 +380,33 @@ public class OptimizedSmartSqlService {
      */
     private boolean isValidSql(String sql) {
         if (sql == null || sql.isEmpty()) {
+            log.debug("❌ SQL验证失败: SQL为空");
             return false;
         }
 
+        // 清理Markdown代码块标记
+        String cleanedSql = sql.trim()
+                .replaceAll("^```sql\\s*", "")  // 去除开头的 ```sql
+                .replaceAll("^```\\s*", "")      // 去除开头的 ```
+                .replaceAll("\\s*```$", "")      // 去除结尾的 ```
+                .trim();
+
         // 检查是否是错误消息
-        if (sql.contains("无法生成SQL") || sql.contains("失败")) {
+        if (cleanedSql.contains("无法生成SQL") || cleanedSql.contains("失败")) {
+            log.debug("❌ SQL验证失败: 包含错误消息 - {}", cleanedSql.substring(0, Math.min(100, cleanedSql.length())));
             return false;
         }
 
         // 检查是否以SELECT开头（允许前后有空格）
-        return sql.trim().toLowerCase().startsWith("select");
+        boolean isValid = cleanedSql.toLowerCase().startsWith("select");
+
+        if (isValid) {
+            log.debug("✅ SQL验证通过: {}", cleanedSql.substring(0, Math.min(100, cleanedSql.length())));
+        } else {
+            log.debug("❌ SQL验证失败: 不以SELECT开头 - {}", cleanedSql.substring(0, Math.min(100, cleanedSql.length())));
+        }
+
+        return isValid;
     }
 
     /**

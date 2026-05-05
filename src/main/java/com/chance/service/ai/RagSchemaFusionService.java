@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * RAG + Schema 融合服务
@@ -263,7 +264,14 @@ public class RagSchemaFusionService {
             return false;
         }
 
-        String lowerSql = sql.toLowerCase().trim();
+        // 清理SQL：去除Markdown代码块标记、前后空白和换行符
+        String cleanedSql = sql.trim()
+                .replaceAll("^```sql\\s*", "")  // 去除开头的 ```sql
+                .replaceAll("^```\\s*", "")      // 去除开头的 ```
+                .replaceAll("\\s*```$", "")      // 去除结尾的 ```
+                .trim();
+
+        String lowerSql = cleanedSql.toLowerCase();
 
         // 只允许SELECT语句（忽略大小写）
         if (!lowerSql.startsWith("select")) {
@@ -271,14 +279,17 @@ public class RagSchemaFusionService {
             return false;
         }
 
-        // 检查危险关键字（忽略大小写）
+        // 检查危险关键字（使用单词边界匹配，避免子字符串误判）
         String[] dangerousKeywords = {
-                "drop ", "delete ", "update ", "insert ",
-                "alter ", "create ", "truncate "
+                "DROP", "DELETE", "UPDATE", "INSERT",
+                "ALTER", "CREATE", "TRUNCATE"
         };
 
         for (String keyword : dangerousKeywords) {
-            if (lowerSql.contains(keyword)) {
+            // 使用单词边界匹配，确保匹配完整的关键字
+            // 例如：INTERVAL 不会匹配 CREATE
+            Pattern pattern = Pattern.compile("\\b" + keyword + "\\b", Pattern.CASE_INSENSITIVE);
+            if (pattern.matcher(cleanedSql).find()) {
                 log.warn("检测到危险关键字: {}", keyword);
                 return false;
             }

@@ -168,9 +168,12 @@ public class SqlSecurityController {
     private SecurityCheckResult checkDangerousKeywords(String sql) {
         String upperSql = sql.toUpperCase();
 
-        // 检查写操作关键字
+        // 检查写操作关键字（使用单词边界匹配）
         for (String keyword : DANGEROUS_WRITE_KEYWORDS) {
-            if (upperSql.contains(keyword)) {
+            // 使用正则表达式匹配完整单词，避免子字符串误判
+            // 例如：INTERVAL 不应该匹配 CREATE
+            Pattern pattern = Pattern.compile("\\b" + keyword + "\\b", Pattern.CASE_INSENSITIVE);
+            if (pattern.matcher(sql).find()) {
                 log.warn("检测到危险写操作关键字: {}", keyword);
                 return SecurityCheckResult.dangerous(
                         "检测到危险操作关键字: " + keyword + "，不允许执行"
@@ -178,9 +181,10 @@ public class SqlSecurityController {
             }
         }
 
-        // 检查系统操作关键字
+        // 检查系统操作关键字（使用单词边界匹配）
         for (String keyword : DANGEROUS_SYSTEM_KEYWORDS) {
-            if (upperSql.contains(keyword)) {
+            Pattern pattern = Pattern.compile("\\b" + keyword.replace(" ", "\\s+") + "\\b", Pattern.CASE_INSENSITIVE);
+            if (pattern.matcher(sql).find()) {
                 log.warn("检测到危险系统操作关键字: {}", keyword);
                 return SecurityCheckResult.dangerous(
                         "检测到危险系统操作关键字: " + keyword + "，不允许执行"
@@ -353,6 +357,13 @@ public class SqlSecurityController {
 
         // 去除首尾空格
         String normalized = sql.trim();
+
+        // 清理Markdown代码块标记
+        normalized = normalized
+                .replaceAll("^```sql\\s*", "")  // 去除开头的 ```sql
+                .replaceAll("^```\\s*", "")      // 去除开头的 ```
+                .replaceAll("\\s*```$", "")      // 去除结尾的 ```
+                .trim();
 
         // 将多个连续空格替换为单个空格
         normalized = normalized.replaceAll("\\s+", " ");
