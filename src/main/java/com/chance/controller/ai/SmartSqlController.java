@@ -53,26 +53,21 @@ public class SmartSqlController {
      */
     @PostMapping("/generate")
     @Operation(summary = "生成SQL", description = "根据自然语言描述生成SQL查询语句")
-    public Map<String, Object> generateSql(@RequestParam String question) {
+    public CommonRsp<Map<String, Object>> generateSql(@RequestParam String question) {
         log.info("收到SQL生成请求: {}", question);
-
-        Map<String, Object> result = new HashMap<>();
 
         try {
             String sql = smartSqlService.generateSql(question);
 
-            result.put("success", true);
-            result.put("question", question);
-            result.put("sql", sql);
-            result.put("message", "SQL生成成功");
+            Map<String, Object> data = new HashMap<>();
+            data.put("question", question);
+            data.put("sql", sql);
 
+            return CommonRsp.success(data);
         } catch (Exception e) {
             log.error("SQL生成失败", e);
-            result.put("success", false);
-            result.put("error", "SQL生成失败: " + e.getMessage());
+            return CommonRsp.error("SQL生成失败: " + e.getMessage());
         }
-
-        return result;
     }
 
     /**
@@ -84,29 +79,25 @@ public class SmartSqlController {
      */
     @PostMapping("/generate-for-table")
     @Operation(summary = "为指定表生成SQL", description = "针对特定表生成SQL查询")
-    public Map<String, Object> generateSqlForTable(
+    public CommonRsp<Map<String, Object>> generateSqlForTable(
             @RequestParam String tableName,
             @RequestParam String question) {
 
         log.info("为表 {} 生成SQL: {}", tableName, question);
 
-        Map<String, Object> result = new HashMap<>();
-
         try {
             String sql = smartSqlService.generateSqlForTable(tableName, question);
 
-            result.put("success", true);
-            result.put("tableName", tableName);
-            result.put("question", question);
-            result.put("sql", sql);
+            Map<String, Object> data = new HashMap<>();
+            data.put("tableName", tableName);
+            data.put("question", question);
+            data.put("sql", sql);
 
+            return CommonRsp.success(data);
         } catch (Exception e) {
             log.error("SQL生成失败", e);
-            result.put("success", false);
-            result.put("error", "SQL生成失败: " + e.getMessage());
+            return CommonRsp.error("SQL生成失败: " + e.getMessage());
         }
-
-        return result;
     }
 
     /**
@@ -117,25 +108,21 @@ public class SmartSqlController {
      */
     @PostMapping("/explain")
     @Operation(summary = "解释SQL", description = "用自然语言解释SQL语句的作用")
-    public Map<String, Object> explainSql(@RequestParam String sql) {
+    public CommonRsp<Map<String, Object>> explainSql(@RequestParam String sql) {
         log.info("解释SQL: {}", sql);
-
-        Map<String, Object> result = new HashMap<>();
 
         try {
             String explanation = smartSqlService.explainSql(sql);
 
-            result.put("success", true);
-            result.put("sql", sql);
-            result.put("explanation", explanation);
+            Map<String, Object> data = new HashMap<>();
+            data.put("sql", sql);
+            data.put("explanation", explanation);
 
+            return CommonRsp.success(data);
         } catch (Exception e) {
             log.error("SQL解释失败", e);
-            result.put("success", false);
-            result.put("error", "SQL解释失败: " + e.getMessage());
+            return CommonRsp.error("SQL解释失败: " + e.getMessage());
         }
-
-        return result;
     }
 
     /**
@@ -146,25 +133,21 @@ public class SmartSqlController {
      */
     @PostMapping("/optimize")
     @Operation(summary = "优化SQL", description = "优化SQL语句以提高性能")
-    public Map<String, Object> optimizeSql(@RequestParam String sql) {
+    public CommonRsp<Map<String, Object>> optimizeSql(@RequestParam String sql) {
         log.info("优化SQL: {}", sql);
-
-        Map<String, Object> result = new HashMap<>();
 
         try {
             String optimizedSql = smartSqlService.optimizeSql(sql);
 
-            result.put("success", true);
-            result.put("originalSql", sql);
-            result.put("optimizedSql", optimizedSql);
+            Map<String, Object> data = new HashMap<>();
+            data.put("originalSql", sql);
+            data.put("optimizedSql", optimizedSql);
 
+            return CommonRsp.success(data);
         } catch (Exception e) {
             log.error("SQL优化失败", e);
-            result.put("success", false);
-            result.put("error", "SQL优化失败: " + e.getMessage());
+            return CommonRsp.error("SQL优化失败: " + e.getMessage());
         }
-
-        return result;
     }
 
     /**

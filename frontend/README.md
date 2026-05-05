@@ -2,9 +2,43 @@
 
 ## 📖 概述
 
-这是一个基于Vue 3和Element Plus构建的现代化前端页面，用于展示智能SQL生成功能。
+这是一个基于Vue 3和Element Plus构建的现代化前端页面，提供两大核心功能：
 
-## ✨ 功能特性
+1. **智能SQL生成系统** - 自然语言转SQL，支持多种生成模式
+2. **AI智能助手** - 聊天对话、SQL优化、代码生成
+
+## 🎯 快速导航
+
+| 功能          | 文件                                     | 说明                |
+|-------------|----------------------------------------|-------------------|
+| 🗄️ SQL生成系统 | [index.html](index.html)               | 智能SQL生成、质量评分、安全检查 |
+| 🤖 AI智能助手   | [ai-assistant.html](ai-assistant.html) | 聊天对话、SQL优化、代码生成   |
+
+## ✨ AI智能助手（新增）
+
+### 功能特性
+
+- 💬 **智能对话** - 自然语言聊天，支持 Markdown 渲染
+- 🗄️ **SQL优化** - 左右对比显示，实时优化建议
+- 💻 **代码生成** - 根据描述自动生成代码，一键复制
+
+### 快速启动
+
+```bash
+# Windows
+start-ai.bat
+
+# macOS/Linux
+./start-ai.sh
+```
+
+或直接打开：`ai-assistant.html`
+
+详见：[AI_ASSISTANT_README.md](AI_ASSISTANT_README.md)
+
+---
+
+## ✨ SQL生成系统功能特性
 
 ### 1. **三种生成模式**
 

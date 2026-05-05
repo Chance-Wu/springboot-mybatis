@@ -692,34 +692,132 @@
              * 统一的API请求封装
              * @param {string} url - 请求URL
              * @param {object} options - axios配置选项
-             * @returns {Promise<any>} 返回body中的数据
+             * @param {object} config - 额外配置
+             * @param {boolean} config.showError - 是否自动显示错误提示（默认true）
+             * @param {boolean} config.showSuccess - 是否自动显示成功提示（默认false）
+             * @returns {Promise<{success: boolean, data: any, message: string, code: string}>}
              */
-            const apiRequest = async (url, options = {}) => {
+            const apiRequest = async (url, options = {}, config = {}) => {
+                const {showError = true, showSuccess = false} = config;
+                
                 try {
                     const response = await axios(url, options);
 
                     // 处理统一响应结构 CommonRsp
-                    if (response.data && response.data.code === '200') {
-                        return {
-                            success: true,
-                            data: response.data.body,
-                            message: response.data.message
-                        };
+                    if (response.data) {
+                        const {code, message, body} = response.data;
+
+                        if (code === '200') {
+                            // 成功响应
+                            if (showSuccess && message) {
+                                ElMessage.success(message);
+                            }
+                            return {
+                                success: true,
+                                data: body || null,
+                                message: message || '操作成功',
+                                code: code
+                            };
+                        } else {
+                            // 业务失败
+                            const errorMsg = message || '请求失败';
+                            if (showError) {
+                                ElMessage.error(errorMsg);
+                            }
+                            return {
+                                success: false,
+                                data: null,
+                                message: errorMsg,
+                                code: code
+                            };
+                        }
                     } else {
-                        return {
-                            success: false,
-                            data: null,
-                            message: response.data?.message || '请求失败'
-                        };
+                        throw new Error('响应数据为空');
                     }
                 } catch (error) {
                     console.error('API请求失败:', error);
+
+                    // 提取错误信息
+                    let errorMsg = '网络请求失败';
+                    if (error.response) {
+                        // 服务器返回错误状态码
+                        errorMsg = error.response.data?.message ||
+                            `HTTP ${error.response.status}: ${error.response.statusText}`;
+                    } else if (error.request) {
+                        // 请求已发送但没有收到响应
+                        errorMsg = '网络连接失败，请检查网络或服务器状态';
+                    } else {
+                        // 其他错误
+                        errorMsg = error.message || '未知错误';
+                    }
+
+                    if (showError) {
+                        ElMessage.error(errorMsg);
+                    }
+                    
                     return {
                         success: false,
                         data: null,
-                        message: error.response?.data?.message || error.message || '网络请求失败'
+                        message: errorMsg,
+                        code: error.response?.data?.code || 'ERROR'
                     };
                 }
+            };
+
+            /**
+             * GET请求快捷方式
+             * @param {string} url - 请求URL
+             * @param {object} params - URL参数
+             * @param {object} config - 配置
+             */
+            const apiGet = (url, params = {}, config = {}) => {
+                return apiRequest(url, {
+                    method: 'GET',
+                    params: params
+                }, config);
+            };
+
+            /**
+             * POST请求快捷方式
+             * @param {string} url - 请求URL
+             * @param {object|FormData} data - 请求数据
+             * @param {object} config - 配置
+             */
+            const apiPost = (url, data = {}, config = {}) => {
+                return apiRequest(url, {
+                    method: 'POST',
+                    data: data
+                }, config);
+            };
+
+            /**
+             * 格式化时间戳为可读格式
+             * @param {number} timestamp - 时间戳（毫秒）
+             * @returns {string} 格式化后的时间字符串
+             */
+            const formatTime = (timestamp) => {
+                if (!timestamp) return '-';
+                const date = new Date(timestamp);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const seconds = String(date.getSeconds()).padStart(2, '0');
+                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            };
+
+            /**
+             * 格式化文件大小
+             * @param {number} bytes - 字节数
+             * @returns {string} 格式化后的大小字符串
+             */
+            const formatSize = (bytes) => {
+                if (!bytes || bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
             };
 
             // 状态
@@ -759,8 +857,6 @@
 
                 try {
                     let apiPath;
-                    const params = new URLSearchParams();
-                    params.append('question', question.value);
 
                     switch (generateMode.value) {
                         case 'optimized':
@@ -774,23 +870,24 @@
                             break;
                     }
 
-                    const response = await apiRequest(`${API_BASE}${apiPath}`, {
-                        method: 'POST',
-                        data: params
-                    });
+                    const params = new URLSearchParams();
+                    params.append('question', question.value);
+
+                    const response = await apiPost(
+                        `${API_BASE}${apiPath}`,
+                        params,
+                        {showError: true}  // 失败时自动显示错误
+                    );
 
                     if (response.success) {
                         Object.assign(result, response.data);
                         ElMessage.success(response.message || 'SQL生成成功');
-                    } else {
-                        ElMessage.error(response.message);
                     }
 
                     // 更新统计
                     await loadStats();
                 } catch (error) {
                     console.error('生成失败:', error);
-                    ElMessage.error('生成失败: ' + error.message);
                 } finally {
                     loading.value = false;
                 }
@@ -810,11 +907,12 @@
                     const params = new URLSearchParams();
                     params.append('sql', checkSql.value);
 
-                    const response = await apiRequest(`${API_BASE}/security/check`, {
-                        method: 'POST',
-                        data: params
-                    });
-
+                    const response = await apiPost(
+                        `${API_BASE}/security/check`,
+                        params,
+                        {showError: false}  // 手动控制错误提示
+                    );
+                                
                     if (response.success) {
                         securityResult.value = response.data;
 
@@ -823,12 +921,10 @@
                         } else {
                             ElMessage.error(securityResult.value.message || 'SQL存在安全风险');
                         }
-                    } else {
-                        ElMessage.error(response.message);
                     }
+                    // 失败时不显示通用错误，因为安全检查有特殊的错误处理逻辑
                 } catch (error) {
                     console.error('检查失败:', error);
-                    ElMessage.error('检查失败: ' + error.message);
                 } finally {
                     checking.value = false;
                 }
@@ -837,9 +933,13 @@
             // 加载统计信息
             const loadStats = async () => {
                 try {
-                    const response = await apiRequest(`${API_BASE}/optimized/stats`);
+                    const response = await apiGet(
+                        `${API_BASE}/optimized/stats`,
+                        {},
+                        {showError: false}  // 静默失败，不影响用户体验
+                    );
 
-                    if (response.success) {
+                    if (response.success && response.data) {
                         const statsData = response.data;
                         stats.totalRequests = statsData.totalRequests || 0;
                         stats.cacheHitRate = statsData.cacheHitRate || '0%';
@@ -851,6 +951,7 @@
                     }
                 } catch (error) {
                     console.error('加载统计失败:', error);
+                    // 静默失败，不影响主流程
                 }
             };
 
@@ -868,21 +969,20 @@
                     );
 
                     clearingCache.value = true;
-                    const response = await apiRequest(`${API_BASE}/optimized/cache/clear`, {
-                        method: 'POST'
-                    });
+                    const response = await apiPost(
+                        `${API_BASE}/optimized/cache/clear`,
+                        {},
+                        {showSuccess: true}  // 自动显示成功提示
+                    );
 
                     if (response.success) {
-                        ElMessage.success(response.message || '缓存已清除');
                         // 重新加载统计
                         await loadStats();
-                    } else {
-                        ElMessage.error(response.message);
                     }
+                    // 失败时 apiRequest 已自动显示错误
                 } catch (error) {
                     if (error !== 'cancel') {
                         console.error('清除缓存失败:', error);
-                        ElMessage.error('清除缓存失败: ' + error.message);
                     }
                 } finally {
                     clearingCache.value = false;

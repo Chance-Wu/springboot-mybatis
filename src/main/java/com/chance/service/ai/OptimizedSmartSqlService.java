@@ -213,7 +213,7 @@ public class OptimizedSmartSqlService {
 
                 log.info("✅ 缓存命中，返回结构化结果");
                 log.info("========== 结构化SQL生成完成（缓存） ==========");
-                
+
                 // 构建结构化结果（缓存命中）
                 StructuredSqlResult result = resultBuilder.buildCompleteResult(
                         cached.getSql(),
