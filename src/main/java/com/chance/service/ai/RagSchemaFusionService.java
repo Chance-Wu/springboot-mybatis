@@ -118,36 +118,57 @@ public class RagSchemaFusionService {
      * @return 生成的SQL语句
      */
     public String generateSqlWithFusion(String question) {
+        long startTime = System.currentTimeMillis();
+
+        log.info("========== 开始RAG融合SQL生成流程 ==========");
         log.info("收到融合SQL生成请求: {}", question);
 
         try {
             // 1. 从知识库检索相关业务规则
+            log.info("[步骤1] 从知识库检索相关业务规则...");
             String knowledgeContext = retrieveRelevantKnowledge(question);
-            log.debug("检索到相关知识: {} 字符", knowledgeContext.length());
+            log.info("检索到相关知识: {} 字符", knowledgeContext.length());
+            log.debug("知识内容预览: {}", knowledgeContext.substring(0, Math.min(200, knowledgeContext.length())));
 
             // 2. 获取数据库Schema信息
+            log.info("[步骤2] 注入Schema信息...");
             String schemaInfo = schemaInjector.injectRelevantSchemas(question);
-            log.debug("Schema信息: {} 字符", schemaInfo.length());
+            log.info("Schema信息: {} 字符", schemaInfo.length());
+            log.debug("Schema内容预览: {}", schemaInfo.substring(0, Math.min(200, schemaInfo.length())));
 
             // 3. 构建融合Prompt
+            log.info("[步骤3] 构建融合Prompt...");
             String systemInstruction = buildFusionSystemInstruction();
             String prompt = buildFusionPrompt(knowledgeContext, schemaInfo, question);
+            log.info("Prompt构建完成，总长度: {} 字符", prompt.length());
 
             // 4. 生成SQL
+            log.info("[步骤4] 调用AI生成SQL...");
             String sql = sqlAssistant.generateSql(systemInstruction, prompt);
-
-            log.info("生成SQL: {}", sql);
+            log.info("✅ AI生成SQL成功: {}", sql.substring(0, Math.min(150, sql.length())));
 
             // 5. 安全检查
+            log.info("[步骤5] 执行SQL安全检查...");
             if (!isSqlSafe(sql)) {
-                log.warn("生成的SQL可能不安全: {}", sql);
+                log.warn("⚠️ 生成的SQL可能不安全: {}", sql);
+                log.info("========== RAG融合SQL生成失败（安全检查） ==========");
                 return "生成的SQL存在安全风险，请手动检查";
             }
+            log.info("✅ SQL安全检查通过");
 
+            long endTime = System.currentTimeMillis();
+            long generationTime = endTime - startTime;
+
+            log.info("✅ RAG融合SQL生成成功！耗时: {}ms", generationTime);
+            log.info("========== RAG融合SQL生成流程结束 ==========");
             return sql;
 
         } catch (Exception e) {
-            log.error("融合SQL生成失败", e);
+            long endTime = System.currentTimeMillis();
+            long generationTime = endTime - startTime;
+
+            log.error("❌ 融合SQL生成失败！耗时: {}ms, 错误: {}", generationTime, e.getMessage(), e);
+            log.info("========== RAG融合SQL生成流程异常结束 ==========");
             return "SQL生成失败: " + e.getMessage();
         }
     }
@@ -156,32 +177,44 @@ public class RagSchemaFusionService {
      * 检索相关的业务知识
      */
     private String retrieveRelevantKnowledge(String question) {
+        log.debug("开始向量化查询: {}", question.substring(0, Math.min(50, question.length())));
+        
         // 向量化查询
         Embedding queryEmbedding = embeddingModel.embed(question).content();
+        log.debug("问题向量化完成");
 
         // 检索最相关的知识（Top 3）
+        log.debug("开始检索相关知识（Top 3）...");
         List<EmbeddingMatch<TextSegment>> matches =
                 knowledgeStore.findRelevant(queryEmbedding, 3);
 
         if (matches.isEmpty()) {
+            log.info("未检索到相关知识");
             return "暂无相关业务规则";
         }
+
+        log.info("检索到 {} 条相关知识", matches.size());
 
         // 格式化知识
         StringBuilder knowledge = new StringBuilder();
         knowledge.append("【相关业务规则和最佳实践】\n\n");
 
+        int matchedCount = 0;
         for (int i = 0; i < matches.size(); i++) {
             TextSegment segment = matches.get(i).embedded();
             double score = matches.get(i).score();
 
             // 只显示相似度高于0.5的知识
             if (score >= 0.5) {
+                matchedCount++;
                 knowledge.append(String.format("%d. %s (相关度: %.2f)\n",
                         i + 1, segment.text(), score));
+                log.debug("匹配知识 #{}: 相关度={:.2f}, 内容={}",
+                        i + 1, score, segment.text().substring(0, Math.min(80, segment.text().length())));
             }
         }
 
+        log.info("过滤后保留 {} 条高相关度知识（阈值>=0.5）", matchedCount);
         return knowledge.toString();
     }
 

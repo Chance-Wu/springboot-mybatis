@@ -2,9 +2,9 @@ package com.chance.service.ai;
 
 import com.chance.component.ai.DatabaseSchemaInjector;
 import com.chance.component.ai.ModelFactory;
+import com.chance.component.ai.SqlSecurity;
 import com.chance.component.ai.StructuredSqlResult;
 import com.chance.component.ai.StructuredSqlResultBuilder;
-import com.chance.controller.ai.SqlSecurityController;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.service.AiServices;
 import lombok.Data;
@@ -30,7 +30,7 @@ public class OptimizedSmartSqlService {
 
     private final ChatLanguageModel chatModel;
     private final DatabaseSchemaInjector schemaInjector;
-    private final SqlSecurityController securityController;
+    private final SqlSecurity securityController;
     private final StructuredSqlResultBuilder resultBuilder;
     private SqlAssistant sqlAssistant;
 
@@ -52,7 +52,7 @@ public class OptimizedSmartSqlService {
 
     public OptimizedSmartSqlService(ModelFactory modelFactory,
                                     DatabaseSchemaInjector schemaInjector,
-                                    SqlSecurityController securityController,
+                                    SqlSecurity securityController,
                                     StructuredSqlResultBuilder resultBuilder) {
         this.chatModel = modelFactory.getModel();
         this.schemaInjector = schemaInjector;
@@ -126,7 +126,7 @@ public class OptimizedSmartSqlService {
 
             // 5. 验证SQL安全性（增强版）
             log.info("[步骤5] 执行SQL安全检查...");
-            SqlSecurityController.SecurityCheckResult securityCheck =
+            SqlSecurity.SecurityCheckResult securityCheck =
                     securityController.checkSqlSecurity(sql);
 
             if (!securityCheck.isSafe()) {
@@ -200,65 +200,81 @@ public class OptimizedSmartSqlService {
         long startTime = System.currentTimeMillis();
         totalRequests++;
 
+        log.info("========== 开始结构化SQL生成流程 ==========");
         log.info("收到结构化SQL生成请求 [{}]: {}", totalRequests, question);
 
         try {
             // 1. 检查缓存
+            log.info("[步骤1] 检查缓存...");
             CachedSql cached = checkCache(question);
             if (cached != null) {
                 totalCacheHits++;
                 long endTime = System.currentTimeMillis();
 
+                log.info("✅ 缓存命中，返回结构化结果");
+                log.info("========== 结构化SQL生成完成（缓存） ==========");
+                
                 // 构建结构化结果（缓存命中）
                 StructuredSqlResult result = resultBuilder.buildCompleteResult(
                         cached.getSql(),
                         question,
                         true,
                         0L,
-                        SqlSecurityController.SecurityCheckResult.safe(),
+                        SqlSecurity.SecurityCheckResult.safe(),
                         null
                 );
 
-                log.info("缓存命中，返回结构化结果");
                 return result;
             }
+            log.info("❌ 缓存未命中，继续生成SQL");
 
             // 2. 智能注入相关表的Schema信息
+            log.info("[步骤2] 注入Schema信息...");
             String schemaInfo = schemaInjector.injectRelevantSchemas(question);
-            log.debug("Schema信息长度: {} 字符", schemaInfo.length());
+            log.info("Schema信息长度: {} 字符", schemaInfo.length());
+            log.debug("Schema内容预览: {}", schemaInfo.substring(0, Math.min(200, schemaInfo.length())));
 
             // 3. 构建优化的Prompt
+            log.info("[步骤3] 构建Prompt...");
             String systemInstruction = buildSystemInstruction();
             String prompt = buildGeneratePrompt(schemaInfo, question);
+            log.info("Prompt构建完成，总长度: {} 字符", prompt.length());
 
             // 4. 使用AI生成SQL（带重试）
+            log.info("[步骤4] 调用AI生成SQL（最多重试{}次）...", MAX_RETRY_COUNT);
             String sql = generateWithRetry(systemInstruction, prompt, MAX_RETRY_COUNT);
-
-            log.info("生成SQL: {}", sql);
+            log.info("✅ AI生成SQL成功: {}", sql.substring(0, Math.min(150, sql.length())));
 
             // 5. 验证SQL安全性（增强版）
-            SqlSecurityController.SecurityCheckResult securityCheck =
+            log.info("[步骤5] 执行SQL安全检查...");
+            SqlSecurity.SecurityCheckResult securityCheck =
                     securityController.checkSqlSecurity(sql);
 
             if (!securityCheck.isSafe()) {
-                log.warn("SQL安全检查失败: {}", securityCheck.getMessage());
+                log.warn("⚠️ SQL安全检查失败: {}", securityCheck.getMessage());
+                log.info("========== 结构化SQL生成失败（安全检查） ==========");
                 totalFailures++;
                 return StructuredSqlResult.failure(
                         "SQL安全检查失败: " + securityCheck.getMessage(),
                         question
                 );
             }
+            log.info("✅ SQL安全检查通过");
 
             // 6. 自动添加LIMIT限制
+            log.info("[步骤6] 添加默认LIMIT限制...");
             String limitedSql = securityController.addDefaultLimit(sql);
+            log.info("添加LIMIT后SQL: {}", limitedSql.substring(0, Math.min(150, limitedSql.length())));
 
             // 7. 缓存结果
+            log.info("[步骤7] 缓存SQL结果...");
             cacheResult(question, limitedSql);
 
             // 8. 构建结构化结果
             long endTime = System.currentTimeMillis();
             long generationTime = endTime - startTime;
 
+            log.info("[步骤8] 构建结构化结果...");
             StructuredSqlResult result = resultBuilder.buildCompleteResult(
                     limitedSql,
                     question,
@@ -271,14 +287,16 @@ public class OptimizedSmartSqlService {
             totalSuccess++;
             totalTimeMs += generationTime;
 
-            log.info("结构化SQL生成成功，耗时: {}ms", generationTime);
+            log.info("✅ 结构化SQL生成成功！耗时: {}ms", generationTime);
+            log.info("========== 结构化SQL生成流程结束 ==========");
             return result;
 
         } catch (Exception e) {
             long endTime = System.currentTimeMillis();
             long generationTime = endTime - startTime;
 
-            log.error("结构化SQL生成失败，耗时: {}ms", generationTime, e);
+            log.error("❌ 结构化SQL生成失败！耗时: {}ms, 错误: {}", generationTime, e.getMessage(), e);
+            log.info("========== 结构化SQL生成流程异常结束 ==========");
 
             totalFailures++;
             return StructuredSqlResult.failure(

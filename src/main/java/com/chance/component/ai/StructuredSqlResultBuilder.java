@@ -1,6 +1,5 @@
 package com.chance.component.ai;
 
-import com.chance.controller.ai.SqlSecurityController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +35,7 @@ public class StructuredSqlResultBuilder {
             String question,
             boolean fromCache,
             Long generationTimeMs,
-            SqlSecurityController.SecurityCheckResult securityCheck,
+            SqlSecurity.SecurityCheckResult securityCheck,
             String schemaInfo) {
 
         StructuredSqlResult result = fromCache ?
@@ -72,7 +71,7 @@ public class StructuredSqlResultBuilder {
      * 构建安全信息
      */
     private StructuredSqlResult.SecurityInfo buildSecurityInfo(
-            SqlSecurityController.SecurityCheckResult securityCheck) {
+            SqlSecurity.SecurityCheckResult securityCheck) {
 
         StructuredSqlResult.SecurityInfo info = new StructuredSqlResult.SecurityInfo();
         info.setSafe(securityCheck.isSafe());

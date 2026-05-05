@@ -250,6 +250,36 @@
             margin-bottom: 20px;
         }
 
+        /* Tooltip 样式优化 */
+        .el-tooltip__popper {
+            max-width: 350px !important;
+        }
+
+        .mode-tooltip-content {
+            padding: 4px 0;
+        }
+
+        .mode-tooltip-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .mode-tooltip-item {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #606266;
+            margin-bottom: 4px;
+        }
+
+        .mode-tooltip-footer {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #EBEEF5;
+            font-size: 12px;
+            color: #909399;
+        }
+
         .stats-panel {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -287,6 +317,20 @@
 
     <!-- 统计面板 -->
     <el-card class="card" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="margin: 0; font-size: 16px;">📊 系统统计</h3>
+            <el-button
+                    type="danger"
+                    size="small"
+                    @click="clearCache"
+                    :loading="clearingCache"
+            >
+                <el-icon>
+                    <Delete/>
+                </el-icon>
+                清除缓存
+            </el-button>
+        </div>
         <div class="stats-panel">
             <div class="stat-card">
                 <div class="stat-value">{{ stats.totalRequests }}</div>
@@ -320,9 +364,68 @@
                 <!-- 模式选择 -->
                 <div class="mode-selector">
                     <el-radio-group v-model="generateMode" size="large">
-                        <el-radio-button label="optimized">优化模式</el-radio-button>
-                        <el-radio-button label="structured">结构化模式</el-radio-button>
-                        <el-radio-button label="fusion">RAG融合</el-radio-button>
+                        <el-tooltip
+                                placement="top"
+                                effect="light"
+                                :show-after="300"
+                                popper-class="mode-tooltip"
+                        >
+                            <template #content>
+                                <div class="mode-tooltip-content">
+                                    <div class="mode-tooltip-title" style="color: #409EFF;">🚀 优化模式（推荐）</div>
+                                    <div class="mode-tooltip-item">✅ 智能缓存机制，相同问题秒级响应</div>
+                                    <div class="mode-tooltip-item">✅ 自动重试机制，提高成功率</div>
+                                    <div class="mode-tooltip-item">✅ 质量评分系统，确保SQL质量</div>
+                                    <div class="mode-tooltip-item">✅ 安全检查 + LIMIT限制</div>
+                                    <div class="mode-tooltip-footer">
+                                        <span style="color: #909399;">💡 适用：</span>生产环境、频繁查询
+                                    </div>
+                                </div>
+                            </template>
+                            <el-radio-button label="optimized">优化模式</el-radio-button>
+                        </el-tooltip>
+
+                        <el-tooltip
+                                placement="top"
+                                effect="light"
+                                :show-after="300"
+                                popper-class="mode-tooltip"
+                        >
+                            <template #content>
+                                <div class="mode-tooltip-content">
+                                    <div class="mode-tooltip-title" style="color: #67C23A;">📊 结构化模式</div>
+                                    <div class="mode-tooltip-item">✅ 完整的SQL元数据信息</div>
+                                    <div class="mode-tooltip-item">✅ SQL类型、复杂度分析</div>
+                                    <div class="mode-tooltip-item">✅ 使用的表、字段详情</div>
+                                    <div class="mode-tooltip-item">✅ 性能建议和优化提示</div>
+                                    <div class="mode-tooltip-footer">
+                                        <span style="color: #909399;">💡 适用：</span>学习分析、详细展示
+                                    </div>
+                                </div>
+                            </template>
+                            <el-radio-button label="structured">结构化模式</el-radio-button>
+                        </el-tooltip>
+
+                        <el-tooltip
+                                placement="top"
+                                effect="light"
+                                :show-after="300"
+                                popper-class="mode-tooltip"
+                        >
+                            <template #content>
+                                <div class="mode-tooltip-content">
+                                    <div class="mode-tooltip-title" style="color: #E6A23C;">🧠 RAG融合模式</div>
+                                    <div class="mode-tooltip-item">✅ 结合业务知识库生成SQL</div>
+                                    <div class="mode-tooltip-item">✅ 理解业务规则和最佳实践</div>
+                                    <div class="mode-tooltip-item">✅ 自动应用状态过滤等规则</div>
+                                    <div class="mode-tooltip-item">✅ 支持自定义业务知识</div>
+                                    <div class="mode-tooltip-footer">
+                                        <span style="color: #909399;">💡 适用：</span>复杂业务、企业规范
+                                    </div>
+                                </div>
+                            </template>
+                            <el-radio-button label="fusion">RAG融合</el-radio-button>
+                        </el-tooltip>
                     </el-radio-group>
                 </div>
 
@@ -585,12 +688,47 @@
             // API基础URL
             const API_BASE = 'http://localhost:8091/smart-sql';
 
+            /**
+             * 统一的API请求封装
+             * @param {string} url - 请求URL
+             * @param {object} options - axios配置选项
+             * @returns {Promise<any>} 返回body中的数据
+             */
+            const apiRequest = async (url, options = {}) => {
+                try {
+                    const response = await axios(url, options);
+
+                    // 处理统一响应结构 CommonRsp
+                    if (response.data && response.data.code === '200') {
+                        return {
+                            success: true,
+                            data: response.data.body,
+                            message: response.data.message
+                        };
+                    } else {
+                        return {
+                            success: false,
+                            data: null,
+                            message: response.data?.message || '请求失败'
+                        };
+                    }
+                } catch (error) {
+                    console.error('API请求失败:', error);
+                    return {
+                        success: false,
+                        data: null,
+                        message: error.response?.data?.message || error.message || '网络请求失败'
+                    };
+                }
+            };
+
             // 状态
             const question = ref('');
             const checkSql = ref('');
             const generateMode = ref('structured');
             const loading = ref(false);
             const checking = ref(false);
+            const clearingCache = ref(false);
             const result = reactive({});
             const securityResult = ref(null);
             const stats = reactive({
@@ -620,37 +758,39 @@
                 Object.assign(result, {});
 
                 try {
-                    let response;
+                    let apiPath;
                     const params = new URLSearchParams();
                     params.append('question', question.value);
 
                     switch (generateMode.value) {
                         case 'optimized':
-                            response = await axios.post(`${API_BASE}/generate-optimized`, params);
+                            apiPath = '/generate-optimized';
                             break;
                         case 'structured':
-                            response = await axios.post(`${API_BASE}/generate-structured`, params);
+                            apiPath = '/generate-structured';
                             break;
                         case 'fusion':
-                            response = await axios.post(`${API_BASE}/generate-fusion`, params);
+                            apiPath = '/generate-fusion';
                             break;
                     }
 
-                    if (response.data) {
-                        Object.assign(result, response.data);
+                    const response = await apiRequest(`${API_BASE}${apiPath}`, {
+                        method: 'POST',
+                        data: params
+                    });
 
-                        if (result.success) {
-                            ElMessage.success('SQL生成成功');
-                        } else {
-                            ElMessage.error(result.error || '生成失败');
-                        }
+                    if (response.success) {
+                        Object.assign(result, response.data);
+                        ElMessage.success(response.message || 'SQL生成成功');
+                    } else {
+                        ElMessage.error(response.message);
                     }
 
                     // 更新统计
                     await loadStats();
                 } catch (error) {
                     console.error('生成失败:', error);
-                    ElMessage.error('生成失败: ' + (error.response?.data?.error || error.message));
+                    ElMessage.error('生成失败: ' + error.message);
                 } finally {
                     loading.value = false;
                 }
@@ -670,13 +810,21 @@
                     const params = new URLSearchParams();
                     params.append('sql', checkSql.value);
 
-                    const response = await axios.post(`${API_BASE}/security/check`, params);
-                    securityResult.value = response.data;
+                    const response = await apiRequest(`${API_BASE}/security/check`, {
+                        method: 'POST',
+                        data: params
+                    });
 
-                    if (response.data.safe) {
-                        ElMessage.success('SQL安全检查通过');
+                    if (response.success) {
+                        securityResult.value = response.data;
+
+                        if (securityResult.value.safe) {
+                            ElMessage.success(response.message || 'SQL安全检查通过');
+                        } else {
+                            ElMessage.error(securityResult.value.message || 'SQL存在安全风险');
+                        }
                     } else {
-                        ElMessage.error(response.data.message);
+                        ElMessage.error(response.message);
                     }
                 } catch (error) {
                     console.error('检查失败:', error);
@@ -689,18 +837,55 @@
             // 加载统计信息
             const loadStats = async () => {
                 try {
-                    const response = await axios.get(`${API_BASE}/optimized/stats`);
-                    if (response.data.success) {
-                        stats.totalRequests = response.data.totalRequests || 0;
-                        stats.cacheHitRate = response.data.cacheHitRate || '0%';
-                        stats.avgTime = response.data.avgGenerationTimeMs || 0;
+                    const response = await apiRequest(`${API_BASE}/optimized/stats`);
 
-                        const success = response.data.totalSuccess || 0;
-                        const total = response.data.totalRequests || 1;
+                    if (response.success) {
+                        const statsData = response.data;
+                        stats.totalRequests = statsData.totalRequests || 0;
+                        stats.cacheHitRate = statsData.cacheHitRate || '0%';
+                        stats.avgTime = statsData.avgGenerationTimeMs || 0;
+
+                        const success = statsData.totalSuccess || 0;
+                        const total = statsData.totalRequests || 1;
                         stats.successRate = Math.round(success / total * 100) + '%';
                     }
                 } catch (error) {
                     console.error('加载统计失败:', error);
+                }
+            };
+
+            // 清除缓存
+            const clearCache = async () => {
+                try {
+                    await ElMessageBox.confirm(
+                        '确定要清除所有缓存吗？',
+                        '警告',
+                        {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }
+                    );
+
+                    clearingCache.value = true;
+                    const response = await apiRequest(`${API_BASE}/optimized/cache/clear`, {
+                        method: 'POST'
+                    });
+
+                    if (response.success) {
+                        ElMessage.success(response.message || '缓存已清除');
+                        // 重新加载统计
+                        await loadStats();
+                    } else {
+                        ElMessage.error(response.message);
+                    }
+                } catch (error) {
+                    if (error !== 'cancel') {
+                        console.error('清除缓存失败:', error);
+                        ElMessage.error('清除缓存失败: ' + error.message);
+                    }
+                } finally {
+                    clearingCache.value = false;
                 }
             };
 
@@ -797,12 +982,14 @@
                 generateMode,
                 loading,
                 checking,
+                clearingCache,
                 result,
                 securityResult,
                 stats,
                 examples,
                 generateSql,
                 checkSqlSecurity,
+                clearCache,
                 useExample,
                 showExamples,
                 clearAll,

@@ -1,5 +1,7 @@
 package com.chance.controller.ai;
 
+import com.chance.common.CommonRsp;
+import com.chance.component.ai.SqlSecurity;
 import com.chance.component.ai.StructuredSqlResult;
 import com.chance.service.ai.OptimizedSmartSqlService;
 import com.chance.service.ai.RagSchemaFusionService;
@@ -41,7 +43,7 @@ public class SmartSqlController {
     private OptimizedSmartSqlService optimizedSmartSqlService;
 
     @Resource
-    private SqlSecurityController sqlSecurityController;
+    private SqlSecurity sqlSecurity;
 
     /**
      * 根据自然语言生成SQL
@@ -173,10 +175,16 @@ public class SmartSqlController {
      */
     @PostMapping("/query")
     @Operation(summary = "智能查询", description = "自然语言查询，自动生成SQL")
-    public Map<String, Object> smartQuery(@RequestParam String question) {
+    public CommonRsp<Map<String, Object>> smartQuery(@RequestParam String question) {
         log.info("智能查询: {}", question);
 
-        return smartSqlService.executeGeneratedSql(question);
+        try {
+            Map<String, Object> data = smartSqlService.executeGeneratedSql(question);
+            return CommonRsp.success(data);
+        } catch (Exception e) {
+            log.error("智能查询失败", e);
+            return CommonRsp.error("智能查询失败: " + e.getMessage());
+        }
     }
 
     /**
@@ -186,19 +194,17 @@ public class SmartSqlController {
      */
     @GetMapping("/schema")
     @Operation(summary = "获取Schema", description = "获取数据库表结构信息")
-    public Map<String, Object> getSchema() {
-        Map<String, Object> result = new HashMap<>();
-
+    public CommonRsp<Map<String, Object>> getSchema() {
         try {
             String schema = smartSqlService.getSchemaInfo();
-            result.put("success", true);
-            result.put("schema", schema);
-        } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", e.getMessage());
-        }
 
-        return result;
+            Map<String, Object> data = new HashMap<>();
+            data.put("schema", schema);
+
+            return CommonRsp.success(data);
+        } catch (Exception e) {
+            return CommonRsp.error(e.getMessage());
+        }
     }
 
     /**
@@ -208,19 +214,13 @@ public class SmartSqlController {
      */
     @PostMapping("/cache/clear")
     @Operation(summary = "清除缓存", description = "清除数据库Schema缓存")
-    public Map<String, Object> clearCache() {
-        Map<String, Object> result = new HashMap<>();
-
+    public CommonRsp<String> clearCache() {
         try {
             smartSqlService.clearSchemaCache();
-            result.put("success", true);
-            result.put("message", "Schema缓存已清除");
+            return CommonRsp.success("Schema缓存已清除");
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", e.getMessage());
+            return CommonRsp.error(e.getMessage());
         }
-
-        return result;
     }
 
     /**
@@ -230,19 +230,13 @@ public class SmartSqlController {
      */
     @GetMapping("/cache/stats")
     @Operation(summary = "缓存统计", description = "获取Schema缓存统计信息")
-    public Map<String, Object> getCacheStats() {
-        Map<String, Object> result = new HashMap<>();
-
+    public CommonRsp<Map<String, Object>> getCacheStats() {
         try {
             Map<String, Object> stats = smartSqlService.getSchemaCacheStats();
-            result.put("success", true);
-            result.putAll(stats);
+            return CommonRsp.success(stats);
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", e.getMessage());
+            return CommonRsp.error(e.getMessage());
         }
-
-        return result;
     }
 
     /**
@@ -253,27 +247,22 @@ public class SmartSqlController {
      */
     @PostMapping("/generate-fusion")
     @Operation(summary = "融合生成SQL", description = "结合业务知识和数据库Schema生成SQL")
-    public Map<String, Object> generateSqlFusion(@RequestParam String question) {
+    public CommonRsp<Map<String, Object>> generateSqlFusion(@RequestParam String question) {
         log.info("收到融合SQL生成请求: {}", question);
-
-        Map<String, Object> result = new HashMap<>();
 
         try {
             String sql = ragSchemaFusionService.generateSqlWithFusion(question);
 
-            result.put("success", true);
-            result.put("question", question);
-            result.put("sql", sql);
-            result.put("type", "fusion");
-            result.put("message", "使用RAG + Schema融合生成");
+            Map<String, Object> data = new HashMap<>();
+            data.put("question", question);
+            data.put("sql", sql);
+            data.put("type", "fusion");
 
+            return CommonRsp.success(data);
         } catch (Exception e) {
             log.error("融合SQL生成失败", e);
-            result.put("success", false);
-            result.put("error", "SQL生成失败: " + e.getMessage());
+            return CommonRsp.error("SQL生成失败: " + e.getMessage());
         }
-
-        return result;
     }
 
     /**
@@ -284,24 +273,16 @@ public class SmartSqlController {
      */
     @PostMapping("/knowledge/add")
     @Operation(summary = "添加业务知识", description = "添加自定义的业务规则和最佳实践")
-    public Map<String, Object> addKnowledge(@RequestParam String knowledge) {
+    public CommonRsp<String> addKnowledge(@RequestParam String knowledge) {
         log.info("添加自定义业务知识");
-
-        Map<String, Object> result = new HashMap<>();
 
         try {
             ragSchemaFusionService.addCustomKnowledge(knowledge);
-
-            result.put("success", true);
-            result.put("message", "业务知识添加成功");
-
+            return CommonRsp.success("业务知识添加成功");
         } catch (Exception e) {
             log.error("添加知识失败", e);
-            result.put("success", false);
-            result.put("error", "添加失败: " + e.getMessage());
+            return CommonRsp.error("添加失败: " + e.getMessage());
         }
-
-        return result;
     }
 
     /**
@@ -311,19 +292,13 @@ public class SmartSqlController {
      */
     @GetMapping("/knowledge/stats")
     @Operation(summary = "知识库统计", description = "获取业务知识库统计信息")
-    public Map<String, Object> getKnowledgeStats() {
-        Map<String, Object> result = new HashMap<>();
-
+    public CommonRsp<Map<String, Object>> getKnowledgeStats() {
         try {
             Map<String, Object> stats = ragSchemaFusionService.getKnowledgeStats();
-            result.put("success", true);
-            result.putAll(stats);
+            return CommonRsp.success(stats);
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", e.getMessage());
+            return CommonRsp.error(e.getMessage());
         }
-
-        return result;
     }
 
     /**
@@ -334,9 +309,16 @@ public class SmartSqlController {
      */
     @PostMapping("/generate-optimized")
     @Operation(summary = "优化生成SQL", description = "带缓存、重试、质量评估的SQL生成")
-    public OptimizedSmartSqlService.SqlGenerationResult generateSqlOptimized(@RequestParam String question) {
+    public CommonRsp<OptimizedSmartSqlService.SqlGenerationResult> generateSqlOptimized(@RequestParam String question) {
         log.info("收到优化SQL生成请求: {}", question);
-        return optimizedSmartSqlService.generateSql(question);
+
+        try {
+            OptimizedSmartSqlService.SqlGenerationResult result = optimizedSmartSqlService.generateSql(question);
+            return CommonRsp.success(result);
+        } catch (Exception e) {
+            log.error("优化SQL生成失败", e);
+            return CommonRsp.error("优化SQL生成失败: " + e.getMessage());
+        }
     }
 
     /**
@@ -347,9 +329,16 @@ public class SmartSqlController {
      */
     @PostMapping("/generate-structured")
     @Operation(summary = "结构化生成SQL", description = "返回包含完整元数据的结构化SQL结果")
-    public StructuredSqlResult generateSqlStructured(@RequestParam String question) {
+    public CommonRsp<StructuredSqlResult> generateSqlStructured(@RequestParam String question) {
         log.info("收到结构化SQL生成请求: {}", question);
-        return optimizedSmartSqlService.generateStructuredSql(question);
+
+        try {
+            StructuredSqlResult result = optimizedSmartSqlService.generateStructuredSql(question);
+            return CommonRsp.success(result);
+        } catch (Exception e) {
+            log.error("结构化SQL生成失败", e);
+            return CommonRsp.error("结构化SQL生成失败: " + e.getMessage());
+        }
     }
 
     /**
@@ -359,19 +348,13 @@ public class SmartSqlController {
      */
     @GetMapping("/optimized/stats")
     @Operation(summary = "优化服务统计", description = "获取优化SQL生成服务的统计信息")
-    public Map<String, Object> getOptimizedStats() {
-        Map<String, Object> result = new HashMap<>();
-
+    public CommonRsp<Map<String, Object>> getOptimizedStats() {
         try {
             Map<String, Object> stats = optimizedSmartSqlService.getCacheStats();
-            result.put("success", true);
-            result.putAll(stats);
+            return CommonRsp.success(stats);
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", e.getMessage());
+            return CommonRsp.error(e.getMessage());
         }
-
-        return result;
     }
 
     /**
@@ -381,19 +364,13 @@ public class SmartSqlController {
      */
     @PostMapping("/optimized/cache/clear")
     @Operation(summary = "清除优化缓存", description = "清除优化SQL生成服务的缓存")
-    public Map<String, Object> clearOptimizedCache() {
-        Map<String, Object> result = new HashMap<>();
-
+    public CommonRsp<String> clearOptimizedCache() {
         try {
             optimizedSmartSqlService.clearCache();
-            result.put("success", true);
-            result.put("message", "优化服务缓存已清除");
+            return CommonRsp.success("优化服务缓存已清除");
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", e.getMessage());
+            return CommonRsp.error(e.getMessage());
         }
-
-        return result;
     }
 
     /**
@@ -404,9 +381,16 @@ public class SmartSqlController {
      */
     @PostMapping("/security/check")
     @Operation(summary = "SQL安全检查", description = "检查SQL语句的安全性")
-    public SqlSecurityController.SecurityCheckResult checkSqlSecurity(@RequestParam String sql) {
+    public CommonRsp<SqlSecurity.SecurityCheckResult> checkSqlSecurity(@RequestParam String sql) {
         log.info("收到SQL安全检查请求");
-        return sqlSecurityController.checkSqlSecurity(sql);
+
+        try {
+            SqlSecurity.SecurityCheckResult result = sqlSecurity.checkSqlSecurity(sql);
+            return CommonRsp.success(result);
+        } catch (Exception e) {
+            log.error("SQL安全检查失败", e);
+            return CommonRsp.error("SQL安全检查失败: " + e.getMessage());
+        }
     }
 
     /**
@@ -418,11 +402,18 @@ public class SmartSqlController {
      */
     @PostMapping("/security/validate")
     @Operation(summary = "SQL验证并修复", description = "验证SQL安全性并自动修复")
-    public SqlSecurityController.ValidationResult validateAndFixSql(
+    public CommonRsp<SqlSecurity.ValidationResult> validateAndFixSql(
             @RequestParam String sql,
             @RequestParam(defaultValue = "false") boolean strictMode) {
         log.info("收到SQL验证请求，严格模式: {}", strictMode);
-        return sqlSecurityController.validateAndFix(sql, strictMode);
+
+        try {
+            SqlSecurity.ValidationResult result = sqlSecurity.validateAndFix(sql, strictMode);
+            return CommonRsp.success(result);
+        } catch (Exception e) {
+            log.error("SQL验证失败", e);
+            return CommonRsp.error("SQL验证失败: " + e.getMessage());
+        }
     }
 
     /**
@@ -434,31 +425,27 @@ public class SmartSqlController {
      */
     @PostMapping("/security/add-limit")
     @Operation(summary = "添加LIMIT限制", description = "自动为SQL添加LIMIT子句")
-    public Map<String, Object> addLimitClause(
+    public CommonRsp<Map<String, Object>> addLimitClause(
             @RequestParam String sql,
             @RequestParam(required = false) Integer maxRows) {
         log.info("收到添加LIMIT请求");
 
-        Map<String, Object> result = new HashMap<>();
-
         try {
             String limitedSql;
             if (maxRows != null) {
-                limitedSql = sqlSecurityController.addLimitClause(sql, maxRows);
+                limitedSql = sqlSecurity.addLimitClause(sql, maxRows);
             } else {
-                limitedSql = sqlSecurityController.addDefaultLimit(sql);
+                limitedSql = sqlSecurity.addDefaultLimit(sql);
             }
 
-            result.put("success", true);
-            result.put("originalSql", sql);
-            result.put("limitedSql", limitedSql);
-            result.put("maxRows", maxRows != null ? maxRows : 100);
+            Map<String, Object> data = new HashMap<>();
+            data.put("originalSql", sql);
+            data.put("limitedSql", limitedSql);
+            data.put("maxRows", maxRows != null ? maxRows : 100);
 
+            return CommonRsp.success(data);
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", e.getMessage());
+            return CommonRsp.error(e.getMessage());
         }
-
-        return result;
     }
 }

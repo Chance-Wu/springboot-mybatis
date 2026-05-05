@@ -1,4 +1,4 @@
-package com.chance.controller.ai;
+package com.chance.component.ai;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 @Component
-public class SqlSecurityController {
+public class SqlSecurity {
 
     // 默认最大返回行数
     private static final int DEFAULT_MAX_ROWS = 100;
